@@ -56,7 +56,7 @@ def add_from_image(element_class: GridDrawable, image_path: str,
     :return: None
     """
     bool_array = np.asarray(PILImage.open(image_path)) == 0
-    for row_num, row in enumerate(bool_array):
+    for row_num, row in enumerate(reversed(bool_array)):
         for col_num, element in enumerate(row):
             if element:
                 if random_rotation:

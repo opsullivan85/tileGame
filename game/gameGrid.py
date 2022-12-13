@@ -77,7 +77,6 @@ class GameGrid(Drawable):
             element.draw()
 
     def update(self, dt: float = 1):
-        print(self.always_update_list)
         for element in self.always_update_list + self.update_list:
             element.update(dt)
         self.update_list = []
