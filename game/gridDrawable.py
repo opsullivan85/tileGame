@@ -1,19 +1,24 @@
 from abc import ABC
-from pyglet import image as Image, sprite
+from random import randint
+
+from pyglet import image, sprite
+import numpy as np
+from PIL import Image as PILImage
 
 from game.Constants import TEXTURE_SIZE
 from game.drawable import Drawable
+from game.gameGrid import GameGrid
 from game.gridObject import GridObject
 
 from game.pose import Pose
 
 
 class GridDrawable(GridObject, Drawable, ABC):
-    def __init__(self, pose: Pose = Pose(), image: Image.AbstractImage = None, rotation_center: tuple = (0.5, 0.5)):
+    def __init__(self, pose: Pose = Pose(), img: image.AbstractImage = None, rotation_center: tuple = (0.5, 0.5)):
         super().__init__(pose)
-        image.anchor_x = int(image.width * rotation_center[0])
-        image.anchor_y = int(image.height * rotation_center[1])
-        self._sprite: sprite = sprite.Sprite(image, self.pose.x, self.pose.y)
+        img.anchor_x = int(img.width * rotation_center[0])
+        img.anchor_y = int(img.height * rotation_center[1])
+        self._sprite: sprite = sprite.Sprite(img, self.pose.x, self.pose.y)
 
     @property
     def pose(self) -> Pose:
@@ -38,3 +43,23 @@ class GridDrawable(GridObject, Drawable, ABC):
     def draw(self):
         self.__update()
         self._sprite.draw()
+
+
+def add_from_image(element_class: GridDrawable, image_path: str,
+                   grid: GameGrid, random_rotation: bool = False) -> None:
+    """ Adds all objects from the given image to the given grid
+
+    :param element_class: element class to add
+    :param random_rotation: randomly rotates the objects in 90 degree increments
+    :param image_path: Path to image
+    :param grid: Grid to add objects to
+    :return: None
+    """
+    bool_array = np.asarray(PILImage.open(image_path)) == 0
+    for row_num, row in enumerate(bool_array):
+        for col_num, element in enumerate(row):
+            if element:
+                if random_rotation:
+                    grid.add(element_class(Pose(col_num, row_num, 90*randint(0, 3))))
+                else:
+                    grid.add(element_class(Pose(col_num, row_num)))

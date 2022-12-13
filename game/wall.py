@@ -23,18 +23,3 @@ class Wall(GridDrawable):
     def overlaps(self, others: List['GridObject']) -> None:
         # `others` will always be empty
         pass
-
-
-def add_from_image(image_path: str, grid: GameGrid) -> None:
-    """ Adds all objects from the given image to the given grid
-
-    :param image_path: Path to image
-    :param grid: Grid to add objects to
-    :return: None
-    """
-    bool_array = np.asarray(PILImage.open(image_path)) == 0
-    print(np.asarray(PILImage.open(image_path)))
-    for row_num, row in enumerate(bool_array):
-        for col_num, element in enumerate(row):
-            if element:
-                grid.add(Wall(Pose(col_num, row_num, 90*randint(0, 3))))

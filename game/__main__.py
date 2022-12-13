@@ -4,20 +4,21 @@ from pyglet.window import key
 
 from game.Constants import *
 from game.gameGrid import GameGrid
+from game.gridDrawable import add_from_image
 from game.pose import Pose
-from game.wall import add_from_image
+from game.wall import Wall
 
 window = pyglet.window.Window(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
 
 grid = GameGrid()
 
-add_from_image('../DrinkTheBeer/resources/map.png', grid)
+add_from_image(Wall, '../DrinkTheBeer/resources/map.png', grid)
+
 
 @window.event
 def on_draw():
     window.clear()
     grid.draw()
-
 
 
 # @window.event
@@ -32,8 +33,6 @@ def on_draw():
 #         s.pose.x += 10
 
 
-#
-#
 # @window.event
 # def on_mouse_motion(x, y, dx, dy):
 #     s.pose.w += ((dx > 0) * 2 - 1) * (abs(dx) > 1)
@@ -49,7 +48,7 @@ def on_mouse_press(x, y, button, modifiers):
         print(grid.elements[1].pose.theta)
 
 
-event_logger = pyglet.window.event.WindowEventLogger()
+# event_logger = pyglet.window.event.WindowEventLogger()
 # window.push_handlers(event_logger)
 
 pyglet.app.run()
