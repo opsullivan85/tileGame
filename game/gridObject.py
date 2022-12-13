@@ -9,6 +9,7 @@ from game.pose import Pose
 class GridObject(ABC):
     """ Interface for things which can be placed on the game grid
     """
+    update_every_frame = False
 
     @abstractmethod
     def __init__(self, pose: Pose = Pose()):
@@ -61,7 +62,16 @@ class GridObject(ABC):
     def overlaps(self, others: List['GridObject']) -> None:
         """ Handle overlapping with other objects on the grid every frame
 
-        :param others: Objects this object overlaps with
+        :param others: Objects this object overlaps with, including self
+        :return: None
+        """
+        ...
+
+    @abstractmethod
+    def update(self, dt: float) -> None:
+        """ Handle updates, called every frame if class variable update_every_frame is True
+
+        :param dt: Time since last update
         :return: None
         """
         ...

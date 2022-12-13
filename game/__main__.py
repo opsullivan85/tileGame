@@ -18,6 +18,7 @@ add_from_image(Wall, '../DrinkTheBeer/resources/map.png', grid)
 @window.event
 def on_draw():
     window.clear()
+    grid.update(1)
     grid.draw()
 
 

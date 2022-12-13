@@ -23,3 +23,6 @@ class Wall(GridDrawable):
     def overlaps(self, others: List['GridObject']) -> None:
         # `others` will always be empty
         pass
+
+    def update(self, dt: float) -> None:
+        ...

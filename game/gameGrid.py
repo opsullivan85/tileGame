@@ -11,6 +11,8 @@ class GameGrid(Drawable):
         self.grid = [[[] for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
         self.elements: List[GridObject] = []
         self.drawables: List[Drawable] = []
+        self.always_update_list: List[GridObject] = []
+        self.update_list: List[GridObject] = []
 
     def add(self, element: GridObject) -> bool:
         """ Tries to add an object to the grid
@@ -24,6 +26,8 @@ class GameGrid(Drawable):
             self.elements.append(element)
             if issubclass(type(element), Drawable):
                 self.drawables.append(element)
+            if element.update_every_frame:
+                self.always_update_list.append(element)
         return return_val
 
     def remove(self, element: GridObject) -> bool:
@@ -36,6 +40,10 @@ class GameGrid(Drawable):
             self.elements.remove(element)
             try:
                 self.drawables.remove(element)
+            except ValueError:
+                ...
+            try:
+                self.always_update_list.remove(element)
             except ValueError:
                 ...
             return True
@@ -59,7 +67,7 @@ class GameGrid(Drawable):
     def get(self, pose: Pose) -> List[GridObject]:
         """ Gets the objects at the given position
 
-        :param position: Position to get objects at
+        :param pose: Position to get objects at
         :return: List of objects at the given position
         """
         return self.grid[pose.x][pose.y]
@@ -67,3 +75,9 @@ class GameGrid(Drawable):
     def draw(self):
         for element in self.drawables:
             element.draw()
+
+    def update(self, dt: float = 1):
+        print(self.always_update_list)
+        for element in self.always_update_list + self.update_list:
+            element.update(dt)
+        self.update_list = []
