@@ -37,4 +37,4 @@ def add_from_image(image_path: str, grid: GameGrid) -> None:
     for row_num, row in enumerate(bool_array):
         for col_num, element in enumerate(row):
             if element:
-                grid.add(Wall(Pose(row_num, col_num, 90*randint(0, 3))))
+                grid.add(Wall(Pose(col_num, row_num, 90*randint(0, 3))))

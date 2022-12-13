@@ -8,7 +8,7 @@ from game.pose import Pose
 
 class GameGrid(Drawable):
     def __init__(self):
-        self.grid = [[[] for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
+        self.grid = [[[] for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
         self.elements: List[GridObject] = []
         self.drawables: List[Drawable] = []
 
@@ -62,7 +62,6 @@ class GameGrid(Drawable):
         :param position: Position to get objects at
         :return: List of objects at the given position
         """
-        print(pose.x, pose.y)
         return self.grid[pose.x][pose.y]
 
     def draw(self):
