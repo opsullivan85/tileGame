@@ -13,6 +13,18 @@ class Pose:
         self._h = h
         self.h_update = True
 
+    def __add__(self, other):
+        return Pose(self.x + other.x, self.y + other.y, self.theta + other.theta, self.w + other.w, self.h + other.h)
+
+    def __sub__(self, other):
+        return Pose(self.x - other.x, self.y - other.y, self.theta - other.theta, self.w - other.w, self.h - other.h)
+
+    def __mul__(self, other):
+        return Pose(self.x * other.x, self.y * other.y, self.theta * other.theta, self.w * other.w, self.h * other.h)
+
+    def __truediv__(self, other):
+        return Pose(self.x / other.x, self.y / other.y, self.theta / other.theta, self.w / other.w, self.h / other.h)
+
     def reset_updates(self):
         self.x_update = False
         self.y_update = False
@@ -34,7 +46,7 @@ class Pose:
         return self._y
 
     @y.setter
-    def theta(self, value):
+    def y(self, value):
         self._y = value
         self.y_update = True
 

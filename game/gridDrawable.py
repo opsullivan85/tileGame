@@ -1,13 +1,9 @@
 from abc import ABC
-from random import randint
-
 from pyglet import image, sprite
-import numpy as np
-from PIL import Image as PILImage
+
 
 from game.Constants import TEXTURE_SIZE
 from game.drawable import Drawable
-from game.gameGrid import GameGrid
 from game.gridObject import GridObject
 
 from game.pose import Pose
@@ -43,23 +39,3 @@ class GridDrawable(GridObject, Drawable, ABC):
     def draw(self):
         self.__update()
         self._sprite.draw()
-
-
-def add_from_image(element_class: GridDrawable, image_path: str,
-                   grid: GameGrid, random_rotation: bool = False) -> None:
-    """ Adds all objects from the given image to the given grid
-
-    :param element_class: element class to add
-    :param random_rotation: randomly rotates the objects in 90 degree increments
-    :param image_path: Path to image
-    :param grid: Grid to add objects to
-    :return: None
-    """
-    bool_array = np.asarray(PILImage.open(image_path)) == 0
-    for row_num, row in enumerate(reversed(bool_array)):
-        for col_num, element in enumerate(row):
-            if element:
-                if random_rotation:
-                    grid.add(element_class(Pose(col_num, row_num, 90*randint(0, 3))))
-                else:
-                    grid.add(element_class(Pose(col_num, row_num)))

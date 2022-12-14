@@ -1,6 +1,8 @@
-from typing import List
+from random import randint
+from typing import List, Type
 
-from game.drawable import Drawable
+import numpy as np
+from PIL import Image as PILImage
 from abc import ABC, abstractmethod
 
 from game.pose import Pose
@@ -75,3 +77,22 @@ class GridObject(ABC):
         :return: None
         """
         ...
+
+
+def add_from_image(grid: 'GameGrid', element_class: Type[GridObject],
+                   image_path: str, random_rotation: bool = False) -> None:
+    """ Adds all objects from the given image to the given grid
+
+    :param element_class: element class to add
+    :param random_rotation: randomly rotates the objects in 90 degree increments
+    :param image_path: Path to image
+    :param grid: Grid to add objects to
+    :return: None
+    """
+    bool_array = np.asarray(PILImage.open(image_path)) == 0
+    for row_num, row in enumerate(reversed(bool_array)):
+        for col_num, element in enumerate(row):
+            if element:
+                grid.add(element_class(
+                    Pose(col_num, row_num, 90*randint(0, 3)*random_rotation)
+                ))

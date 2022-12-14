@@ -3,23 +3,19 @@ from pyglet.window import mouse
 from pyglet.window import key
 
 from game.Constants import *
+from game.game import Game
 from game.gameGrid import GameGrid
-from game.gridDrawable import add_from_image
 from game.pose import Pose
 from game.wall import Wall
 
-window = pyglet.window.Window(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
+# window = pyglet.window.Window(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
 
-grid = GameGrid()
+game = Game()
 
-add_from_image(Wall, '../DrinkTheBeer/resources/map.png', grid)
-
-
-@window.event
-def on_draw():
-    window.clear()
-    grid.update(1)
-    grid.draw()
+# @window.event
+# def on_draw():
+#     window.clear()
+#     game.draw()
 
 
 # @window.event
@@ -40,19 +36,18 @@ def on_draw():
 #     s.pose.h += ((dy > 0) * 2 - 1) * (abs(dy) > 1)
 
 
-@window.event
-def on_mouse_press(x, y, button, modifiers):
-    if button == mouse.LEFT:
-        grid.elements[0].move_to_position(Pose(grid.elements[0].pose.x + 1, grid.elements[0].pose.y+1))
-    else:
-        grid.elements[1].pose.theta += 5
-        print(grid.elements[1].pose.theta)
+# @window.event
+# def on_mouse_press(x, y, button, modifiers):
+#     if button == mouse.LEFT:
+#         grid.elements[0].move_to_position(Pose(grid.elements[0].pose.x + 1, grid.elements[0].pose.y+1))
+#     else:
+#         grid.elements[1].pose.theta += 5
+#         print(grid.elements[1].pose.theta)
 
 
-# event_logger = pyglet.window.event.WindowEventLogger()
+event_logger = pyglet.window.event.WindowEventLogger()
 # window.push_handlers(event_logger)
 
-pyglet.app.run()
 
 if __name__ == '__main__':
-    ...
+    pyglet.app.run()
