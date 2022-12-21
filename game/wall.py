@@ -9,7 +9,7 @@ from game.resources import get_resource_path
 
 
 class Wall(GridDrawable):
-    _wall_texture_path = get_resource_path('images/wall.png')
+    _wall_texture_path = get_resource_path('textures/wall.png')
 
     def __init__(self, pose: Pose = Pose()):
         super().__init__(pose, image.load(Wall._wall_texture_path))
