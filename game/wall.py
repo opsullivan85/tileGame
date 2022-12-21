@@ -1,4 +1,5 @@
 from typing import List
+
 from pyglet import image
 
 from game.gridDrawable import GridDrawable

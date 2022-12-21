@@ -1,9 +1,9 @@
+from abc import ABC, abstractmethod
 from random import randint
 from typing import List, Type
 
 import numpy as np
 from PIL import Image as PILImage
-from abc import ABC, abstractmethod
 
 from game.pose import Pose
 
@@ -104,5 +104,5 @@ def add_from_image(grid: 'GameGrid', element_class: Type[GridObject],
         for col_num, element in enumerate(row):
             if element:
                 grid.add(element_class(
-                    Pose(col_num, row_num, 90*randint(0, 3)*random_rotation)
+                    Pose(col_num, row_num, 90 * randint(0, 3) * random_rotation)
                 ))

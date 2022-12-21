@@ -1,11 +1,10 @@
 from abc import ABC
+
 from pyglet import image, sprite
 
-
-from game.Constants import TEXTURE_SIZE
+from game.constants import TEXTURE_SIZE
 from game.drawable import Drawable
 from game.gridObject import GridObject
-
 from game.pose import Pose
 
 

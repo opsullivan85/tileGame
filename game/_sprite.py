@@ -1,6 +1,6 @@
-from game.drawable import Drawable
 from pyglet import image, sprite
 
+from game.drawable import Drawable
 from game.pose import Pose
 
 
@@ -21,8 +21,8 @@ class Sprite(Drawable):
 
     def update(self):
         if self._needs_update:
-            self._sprite.scale_x = self.pose.w/self._sprite.image.width
-            self._sprite.scale_y = self.pose.h/self._sprite.image.height
+            self._sprite.scale_x = self.pose.w / self._sprite.image.width
+            self._sprite.scale_y = self.pose.h / self._sprite.image.height
             self._sprite.x = self.pose.x
             self._sprite.y = self.pose.y
             self._sprite.rotation = self.pose.theta

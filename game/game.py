@@ -1,11 +1,12 @@
-from game.Constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT
+from pyglet import window
+from pyglet.window import key
+
+from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
 from game.pose import Pose
-from game.wall import Wall
 from game.resources import get_resource_path
-from pyglet import window
-from pyglet.window import key
+from game.wall import Wall
 
 
 class Game(window.Window):

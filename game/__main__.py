@@ -1,4 +1,5 @@
 import pyglet
+
 from game.game import Game
 
 # window = pyglet.window.Window(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)

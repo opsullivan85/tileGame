@@ -1,6 +1,6 @@
 from typing import List
 
-from game.Constants import *
+from game.constants import *
 from game.drawable import Drawable
 from game.gridObject import GridObject
 from game.pose import Pose
