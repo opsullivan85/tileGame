@@ -34,6 +34,8 @@ class GameGrid(Drawable):
         if return_val := element.move_to_position(element.pose):
             self.elements.append(element)
             if issubclass(type(element), Drawable):
+                # inspector doesn't realize that element is guaranteed to be a Drawable here
+                # noinspection PyTypeChecker
                 self.drawables.append(element)
             if element.update_every_frame:
                 self.always_update_list.append(element)
@@ -48,11 +50,12 @@ class GameGrid(Drawable):
         if element in self.elements:
             self.elements.remove(element)
             self.grid[element.pose.x][element.pose.y].remove(element)
-            try:
+            if issubclass(type(element), Drawable):
+                # inspector doesn't realize that element is guaranteed to be a Drawable here
+                # noinspection PyTypeChecker
                 self.drawables.remove(element)
-            except ValueError:
-                ...
             try:
+                # element.update_every_frame could have changed since the element was added
                 self.always_update_list.remove(element)
             except ValueError:
                 ...
