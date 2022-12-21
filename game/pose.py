@@ -110,8 +110,9 @@ class Pose:
 
     @x.setter
     def x(self, value):
-        self._x = value
-        self.x_updated = True
+        if value != self._x:
+            self._x = value
+            self.x_updated = True
 
     @property
     def y(self):
@@ -119,8 +120,9 @@ class Pose:
 
     @y.setter
     def y(self, value):
-        self._y = value
-        self.y_updated = True
+        if value != self._y:
+            self._y = value
+            self.y_updated = True
 
     @property
     def theta(self):
@@ -128,8 +130,9 @@ class Pose:
 
     @theta.setter
     def theta(self, value):
-        self._theta = value
-        self.theta_updated = True
+        if value != self._theta:
+            self._theta = value
+            self.theta_updated = True
 
     @property
     def w(self):
@@ -137,8 +140,9 @@ class Pose:
 
     @w.setter
     def w(self, value):
-        self._w = value
-        self.w_updated = True
+        if value != self._w:
+            self._w = value
+            self.w_updated = True
 
     @property
     def h(self):
@@ -146,5 +150,6 @@ class Pose:
 
     @h.setter
     def h(self, value):
-        self._h = value
-        self.h_updated = True
+        if value != self._h:
+            self._h = value
+            self.h_updated = True

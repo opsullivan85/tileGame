@@ -4,6 +4,7 @@ from pyglet.window import key
 from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, GRID_HEIGHT, GRID_WIDTH
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
+from game.player import Player
 from game.pose import Pose
 from game.resources import get_resource_path
 from game.wall import Wall
@@ -16,6 +17,12 @@ class Game(window.Window):
         super().__init__(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
         self.grid = GameGrid(GRID_HEIGHT, GRID_WIDTH)
         self.init_walls()
+
+        self.player = Player(Pose(1, 1))
+        self.grid.add(self.player)
+        self.grid.add(Player(Pose(2, 2)))
+        self.grid.add(Player(Pose(3, 3)))
+        self.grid.add(Player(Pose(3, 3, 90)))
 
     def init_walls(self):
         add_from_image(self.grid, Wall, get_resource_path('map.png'))
@@ -30,11 +37,15 @@ class Game(window.Window):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.W:
-            self.grid.elements[1].move_to_position(self.grid.elements[1].pose + Pose(0, 1))
+            self.player.move_to_position(self.player.pose + Pose(0, 1))
+            self.player.pose.theta = 0
         elif symbol == key.A:
-            self.grid.elements[1].move_to_position(self.grid.elements[1].pose - Pose(1, 0))
+            self.player.move_to_position(self.player.pose - Pose(1, 0))
+            self.player.pose.theta = -90
         elif symbol == key.S:
-            self.grid.elements[1].move_to_position(self.grid.elements[1].pose - Pose(0, 1))
+            self.player.move_to_position(self.player.pose - Pose(0, 1))
+            self.player.pose.theta = 180
         elif symbol == key.D:
-            self.grid.elements[1].move_to_position(self.grid.elements[1].pose + Pose(1, 0))
-        print(self.grid.elements[1].pose)
+            self.player.move_to_position(self.player.pose + Pose(1, 0))
+            self.player.pose.theta = 90
+        # print(self.player.pose)

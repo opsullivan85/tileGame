@@ -26,14 +26,6 @@ class GridDrawable(GridObject, Drawable, ABC):
         img.anchor_y = int(img.height * rotation_center[1])
         self._sprite: sprite = sprite.Sprite(img, self.pose.x, self.pose.y)
 
-    @property
-    def pose(self) -> Pose:
-        return GridObject.pose.fget(self)
-
-    @pose.setter
-    def pose(self, other: Pose):
-        GridObject.pose.fset(self, other)
-
     def __update(self):
         """ Updates the visual properties of this sprite.
 

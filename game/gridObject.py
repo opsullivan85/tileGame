@@ -16,15 +16,8 @@ class GridObject(ABC):
     @abstractmethod
     def __init__(self, pose: Pose = Pose()):
         self.grid: 'GameGrid' = None
-        self._pose = pose
-
-    @property
-    def pose(self) -> Pose:
-        return self._pose
-
-    @pose.setter
-    def pose(self, other: Pose):
-        self._pose = other
+        self.pose = pose
+        self.tile_size = 5
 
     def add_to_grid(self, grid: 'GameGrid') -> bool:
         """ Add the object to the given grid
@@ -34,15 +27,21 @@ class GridObject(ABC):
         """
         return grid.add(self)
 
+    def remove_from_grid(self) -> bool:
+        """ Remove the object from the grid
+
+        :return: bool, True if the remove was successful, False otherwise
+        """
+        return self.grid.remove(self)
+
     def move_to_position(self, pose: Pose) -> bool:
         """ Move the object to the given position on the grid
 
         :param pose: position to move to
         :return: bool, True if the move was successful, False otherwise
         """
-        for element in self.grid.get(pose):
-            if not self.can_coexist(element):
-                return False
+        if not self.can_coexist(self.grid.get(pose)):
+            return False
         try:
             self.grid.get(self.pose).remove(self)
         except ValueError:
@@ -51,14 +50,14 @@ class GridObject(ABC):
         self.grid.get(self.pose).append(self)
         return True
 
-    @abstractmethod
-    def can_coexist(self, other: 'GridObject') -> bool:
-        """ Whether or not this object can coexist with another object on the grid
+    def can_coexist(self, others: List['GridObject']) -> bool:
+        """ Whether this object can coexist with other objects on the grid at this tile
 
-        :param other: Other grid object
+        :param others: Other grid objects at this tile
         :return: bool, true if this object can coexist with the other object
         """
-        ...
+        total_size = self.tile_size + sum([other.tile_size for other in others])
+        return total_size <= 5
 
     @abstractmethod
     def overlaps(self, others: List['GridObject']) -> None:
