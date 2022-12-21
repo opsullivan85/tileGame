@@ -68,8 +68,15 @@ class Pose:
 
     def __truediv__(self, other):
         """ Divide two poses like vectors, **including width and height**.
+
+        warnings:: This is not a floor division. GameGrids do not like working with floats.
         """
         return Pose(self.x / other.x, self.y / other.y, self.theta / other.theta, self.w / other.w, self.h / other.h)
+
+    def __floordiv__(self, other):
+        """ Divide two poses like vectors, flooring, **including width and height**.
+        """
+        return Pose(self.x // other.x, self.y // other.y, self.theta // other.theta, self.w // other.w, self.h // other.h)
 
     def set_to(self, other: 'Pose'):
         """ Set the pose to the values of another pose.
