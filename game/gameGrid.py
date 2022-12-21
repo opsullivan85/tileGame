@@ -5,9 +5,6 @@ from game.gridObject import GridObject
 from game.pose import Pose
 
 
-# TODO: handle edge cases (literally).
-#  Elements at the top and right of the grid throw exceptions if they try to escape
-#  Elements at the bottom and left of the grid can effect the other side of the grid without being visible
 class GameGrid(Drawable):
     """ Class manages the grid of the game.
     """
@@ -20,7 +17,7 @@ class GameGrid(Drawable):
         """
         self.height = height
         self.width = width
-        self.grid = [[[] for _ in range(height)] for _ in range(width)]
+        self.grid: List[List[List[GridObject]]] = [[[] for _ in range(height)] for _ in range(width)]
         self.elements: List[GridObject] = []
         self.drawables: List[Drawable] = []
         self.always_update_list: List[GridObject] = []
@@ -29,7 +26,7 @@ class GameGrid(Drawable):
     def add(self, element: GridObject) -> bool:
         """ Tries to add an object to the grid
 
-        :param element: The object to add
+        :param: element: The object to add
         :return: if the object was successfully added
         """
         element.grid = self
@@ -45,7 +42,7 @@ class GameGrid(Drawable):
     def remove(self, element: GridObject) -> bool:
         """ Tries to remove an object from the grid
 
-        :param element: The object to remove
+        :param: element: The object to remove
         :return: if the object was successfully removed
         """
         if element in self.elements:
@@ -65,7 +62,7 @@ class GameGrid(Drawable):
     def get(self, pose: Pose) -> List[GridObject]:
         """ Gets the objects at the given position
 
-        :param pose: Position to get objects at
+        :param: pose: Position to get objects at
         :return: List of objects at the given position
         """
         return self.grid[pose.x][pose.y]
@@ -75,7 +72,7 @@ class GameGrid(Drawable):
         Two game grids are equal if they have elements in the same places that agree on their equality.
         Layer order is enforced.
 
-        :param other: The other object to compare to
+        :param: other: The other object to compare to
         """
         return self.grid == other.grid
 

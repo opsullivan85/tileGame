@@ -40,6 +40,8 @@ class GridObject(ABC):
         :param pose: position to move to
         :return: bool, True if the move was successful, False otherwise
         """
+        if pose.x < 0 or pose.x >= self.grid.width or pose.y < 0 or pose.y >= self.grid.height:
+            return False
         if not self.can_coexist(self.grid.get(pose)):
             return False
         try:
