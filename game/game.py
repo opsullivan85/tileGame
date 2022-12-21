@@ -13,6 +13,7 @@ from game.wall import Wall
 class Game(window.Window):
     """ Main game class.
     """
+
     def __init__(self):
         super().__init__(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
         self.grid = GameGrid(GRID_HEIGHT, GRID_WIDTH)

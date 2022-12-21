@@ -1,6 +1,5 @@
 from typing import List
 
-from game.constants import *
 from game.drawable import Drawable
 from game.gridObject import GridObject
 from game.pose import Pose
@@ -12,6 +11,7 @@ from game.pose import Pose
 class GameGrid(Drawable):
     """ Class manages the grid of the game.
     """
+
     def __init__(self, height, width):
         """
 

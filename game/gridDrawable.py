@@ -11,6 +11,7 @@ from game.pose import Pose
 class GridDrawable(GridObject, Drawable, ABC):
     """ Abstract class for drawable grid objects
     """
+
     def __init__(self, pose: Pose = Pose(), img: image.AbstractImage = None, rotation_center: tuple = (0.5, 0.5),
                  texture_size: int = TEXTURE_SIZE):
         """

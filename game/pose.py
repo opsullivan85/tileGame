@@ -1,6 +1,7 @@
 class Pose:
     """ Class for storing and manipulating poses.
     """
+
     def __init__(self, x: float = 0, y: float = 0, theta: float = 0, w: float = 1, h: float = 1):
         self._x = x
         self.x_updated = True
@@ -21,11 +22,11 @@ class Pose:
             self.h == other.h
 
     def __str__(self):
-        return f'(x={"*"*self.x_updated}{self.x}, ' \
-               f'y={"*"*self.y_updated}{self.y}, ' \
-               f'theta={"*"*self.theta_updated}{self.theta}, ' \
-               f'w={"*"*self.w_updated}{self.w}, ' \
-               f'h={"*"*self.h_updated}{self.h})'
+        return f'(x={"*" * self.x_updated}{self.x}, ' \
+               f'y={"*" * self.y_updated}{self.y}, ' \
+               f'theta={"*" * self.theta_updated}{self.theta}, ' \
+               f'w={"*" * self.w_updated}{self.w}, ' \
+               f'h={"*" * self.h_updated}{self.h})'
 
     def coordinates_equal(self, other: 'Pose') -> bool:
         """ Check if the coordinates of two poses are equal
@@ -76,7 +77,8 @@ class Pose:
     def __floordiv__(self, other):
         """ Divide two poses like vectors, flooring, **including width and height**.
         """
-        return Pose(self.x // other.x, self.y // other.y, self.theta // other.theta, self.w // other.w, self.h // other.h)
+        return Pose(self.x // other.x, self.y // other.y, self.theta // other.theta, self.w // other.w,
+                    self.h // other.h)
 
     def set_to(self, other: 'Pose'):
         """ Set the pose to the values of another pose.
