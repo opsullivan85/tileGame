@@ -6,6 +6,9 @@ from game.gridObject import GridObject
 from game.pose import Pose
 
 
+# TODO: handle edge cases (literally).
+#  Elements at the top and right of the grid throw exceptions if they try to escape
+#  Elements at the bottom and left of the grid can effect the other side of the grid without being visible
 class GameGrid(Drawable):
     """ Class manages the grid of the game.
     """
@@ -47,6 +50,7 @@ class GameGrid(Drawable):
         """
         if element in self.elements:
             self.elements.remove(element)
+            self.grid[element.pose.x][element.pose.y].remove(element)
             try:
                 self.drawables.remove(element)
             except ValueError:
