@@ -1,15 +1,17 @@
 class Pose:
+    """ Class for storing and manipulating poses.
+    """
     def __init__(self, x: float = 0, y: float = 0, theta: float = 0, w: float = 1, h: float = 1):
         self._x = x
-        self.x_update = True
+        self.x_updated = True
         self._y = y
-        self.y_update = True
+        self.y_updated = True
         self._theta = theta
-        self.theta_update = True
+        self.theta_updated = True
         self._w = w
-        self.w_update = True
+        self.w_updated = True
         self._h = h
-        self.h_update = True
+        self.h_updated = True
 
     def __eq__(self, other):
         return self.x == other.x and \
@@ -17,6 +19,13 @@ class Pose:
             self.theta == other.theta and \
             self.w == other.w and \
             self.h == other.h
+
+    def __str__(self):
+        return f'(x={"*"*self.x_updated}{self.x}, ' \
+               f'y={"*"*self.y_updated}{self.y}, ' \
+               f'theta={"*"*self.theta_updated}{self.theta}, ' \
+               f'w={"*"*self.w_updated}{self.w}, ' \
+               f'h={"*"*self.h_updated}{self.h})'
 
     def coordinates_equal(self, other: 'Pose') -> bool:
         """ Check if the coordinates of two poses are equal
@@ -43,23 +52,50 @@ class Pose:
         return self.theta == other.theta
 
     def __add__(self, other):
-        return Pose(self.x + other.x, self.y + other.y, self.theta + other.theta, self.w + other.w, self.h + other.h)
+        """ Add two poses together like vectors, **ignoring width and height**.
+        """
+        return Pose(self.x + other.x, self.y + other.y, self.theta + other.theta, self.w, self.h)
 
     def __sub__(self, other):
-        return Pose(self.x - other.x, self.y - other.y, self.theta - other.theta, self.w - other.w, self.h - other.h)
+        """ Subtract two poses like vectors, **ignoring width and height**.
+        """
+        return Pose(self.x - other.x, self.y - other.y, self.theta - other.theta, self.w, self.h)
 
     def __mul__(self, other):
+        """ Multiply two poses like vectors, **including width and height**.
+        """
         return Pose(self.x * other.x, self.y * other.y, self.theta * other.theta, self.w * other.w, self.h * other.h)
 
     def __truediv__(self, other):
+        """ Divide two poses like vectors, **including width and height**.
+        """
         return Pose(self.x / other.x, self.y / other.y, self.theta / other.theta, self.w / other.w, self.h / other.h)
 
+    def set_to(self, other: 'Pose'):
+        """ Set the pose to the values of another pose.
+        Respects update variables.
+
+        :param other: The other pose to copy
+        """
+        if other.x != self.x:
+            self.x = other.x
+        if other.y != self.y:
+            self.y = other.y
+        if other.theta != self.theta:
+            self.theta = other.theta
+        if other.w != self.w:
+            self.w = other.w
+        if other.h != self.h:
+            self.h = other.h
+
     def reset_updates(self):
-        self.x_update = False
-        self.y_update = False
-        self.theta_update = False
-        self.w_update = False
-        self.h_update = False
+        """ Reset the update flags for all pose attributes
+        """
+        self.x_updated = False
+        self.y_updated = False
+        self.theta_updated = False
+        self.w_updated = False
+        self.h_updated = False
 
     @property
     def x(self):
@@ -68,7 +104,7 @@ class Pose:
     @x.setter
     def x(self, value):
         self._x = value
-        self.x_update = True
+        self.x_updated = True
 
     @property
     def y(self):
@@ -77,7 +113,7 @@ class Pose:
     @y.setter
     def y(self, value):
         self._y = value
-        self.y_update = True
+        self.y_updated = True
 
     @property
     def theta(self):
@@ -86,7 +122,7 @@ class Pose:
     @theta.setter
     def theta(self, value):
         self._theta = value
-        self.theta_update = True
+        self.theta_updated = True
 
     @property
     def w(self):
@@ -95,7 +131,7 @@ class Pose:
     @w.setter
     def w(self, value):
         self._w = value
-        self.w_update = True
+        self.w_updated = True
 
     @property
     def h(self):
@@ -104,4 +140,4 @@ class Pose:
     @h.setter
     def h(self, value):
         self._h = value
-        self.h_update = True
+        self.h_updated = True

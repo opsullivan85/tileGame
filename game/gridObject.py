@@ -9,7 +9,7 @@ from game.pose import Pose
 
 
 class GridObject(ABC):
-    """ Interface for things which can be placed on the game grid
+    """ Abstract class for things which can be placed on the game grid
     """
     update_every_frame = False
 
@@ -47,7 +47,7 @@ class GridObject(ABC):
             self.grid.get(self.pose).remove(self)
         except ValueError:
             ...  # Object was not in the grid, happens on first adding to grid
-        self.pose = pose
+        self.pose.set_to(pose)
         self.grid.get(self.pose).append(self)
         return True
 

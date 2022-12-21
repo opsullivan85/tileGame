@@ -9,8 +9,19 @@ from game.pose import Pose
 
 
 class GridDrawable(GridObject, Drawable, ABC):
-    def __init__(self, pose: Pose = Pose(), img: image.AbstractImage = None, rotation_center: tuple = (0.5, 0.5)):
+    """ Abstract class for drawable grid objects
+    """
+    def __init__(self, pose: Pose = Pose(), img: image.AbstractImage = None, rotation_center: tuple = (0.5, 0.5),
+                 texture_size: int = TEXTURE_SIZE):
+        """
+
+        :param pose: Starting pose of the object
+        :param img: Pyglet image to use for the sprite texture
+        :param rotation_center: Center of rotation for the sprite, must be set before initialization
+        :param texture_size: size to display the texture at
+        """
         super().__init__(pose)
+        self.texture_size = texture_size
         img.anchor_x = int(img.width * rotation_center[0])
         img.anchor_y = int(img.height * rotation_center[1])
         self._sprite: sprite = sprite.Sprite(img, self.pose.x, self.pose.y)
@@ -24,16 +35,26 @@ class GridDrawable(GridObject, Drawable, ABC):
         GridObject.pose.fset(self, other)
 
     def __update(self):
-        if self.pose.w_update:
-            self._sprite.scale_x = TEXTURE_SIZE * self.pose.w / self._sprite.image.width
-        if self.pose.h_update:
-            self._sprite.scale_y = TEXTURE_SIZE * self.pose.h / self._sprite.image.height
-        if self.pose.x_update:
-            self._sprite.x = TEXTURE_SIZE * self.pose.x + TEXTURE_SIZE / 2
-        if self.pose.y_update:
-            self._sprite.y = TEXTURE_SIZE * self.pose.y + TEXTURE_SIZE / 2
-        if self.pose.theta_update:
+        """ Updates the visual properties of this sprite.
+
+        Notes:
+            - Dunder naming is used to avoid name conflicts with subclasses.
+            - This method is called automatically when the sprite is drawn.
+            - I'm not sure if the extra work of checking for pose updates actually makes it faster.
+                TODO: Check if this is faster than just updating every frame.
+
+        """
+        if self.pose.w_updated:
+            self._sprite.scale_x = self.texture_size * self.pose.w / self._sprite.image.width
+        if self.pose.h_updated:
+            self._sprite.scale_y = self.texture_size * self.pose.h / self._sprite.image.height
+        if self.pose.x_updated:
+            self._sprite.x = self.texture_size * self.pose.x + self.texture_size / 2
+        if self.pose.y_updated:
+            self._sprite.y = self.texture_size * self.pose.y + self.texture_size / 2
+        if self.pose.theta_updated:
             self._sprite.rotation = self.pose.theta
+        self.pose.reset_updates()
 
     def draw(self):
         self.__update()

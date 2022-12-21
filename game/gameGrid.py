@@ -7,8 +7,17 @@ from game.pose import Pose
 
 
 class GameGrid(Drawable):
-    def __init__(self):
-        self.grid = [[[] for _ in range(GRID_HEIGHT)] for _ in range(GRID_WIDTH)]
+    """ Class manages the grid of the game.
+    """
+    def __init__(self, height, width):
+        """
+
+        :param height: Height of the grid
+        :param width: Width of the grid
+        """
+        self.height = height
+        self.width = width
+        self.grid = [[[] for _ in range(height)] for _ in range(width)]
         self.elements: List[GridObject] = []
         self.drawables: List[Drawable] = []
         self.always_update_list: List[GridObject] = []
