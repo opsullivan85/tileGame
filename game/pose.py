@@ -13,6 +13,37 @@ class Pose:
         self._h = h
         self.h_update = True
 
+    def __eq__(self, other):
+        return self.x == other.x and \
+            self.y == other.y and \
+            self.theta == other.theta and \
+            self.w == other.w and \
+            self.h == other.h
+
+    def coordinates_equal(self, other: 'Pose') -> bool:
+        """ Check if the coordinates of two poses are equal
+
+        :param other: The other object to compare to
+        :return: True if the coordinates of the two poses are equal
+        """
+        return self.x == other.x and self.y == other.y
+
+    def sizes_equal(self, other: 'Pose') -> bool:
+        """ Check if the sizes of two poses are equal
+
+        :param other: The other object to compare to
+        :return: True if the sizes of the two poses are equal
+        """
+        return self.w == other.w and self.h == other.h
+
+    def rotation_equal(self, other: 'Pose') -> bool:
+        """ Check if the rotations of two poses are equal
+
+        :param other: The other object to compare to
+        :return: True if the rotations of the two poses are equal
+        """
+        return self.theta == other.theta
+
     def __add__(self, other):
         return Pose(self.x + other.x, self.y + other.y, self.theta + other.theta, self.w + other.w, self.h + other.h)
 

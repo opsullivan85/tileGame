@@ -1,12 +1,5 @@
 import pyglet
-from pyglet.window import mouse
-from pyglet.window import key
-
-from game.Constants import *
 from game.game import Game
-from game.gameGrid import GameGrid
-from game.pose import Pose
-from game.wall import Wall
 
 # window = pyglet.window.Window(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
 

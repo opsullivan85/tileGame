@@ -78,6 +78,16 @@ class GridObject(ABC):
         """
         ...
 
+    @abstractmethod
+    def __eq__(self, other: 'GridObject') -> bool:
+        """ Checks equality, overrides the == operator.
+        Important for testing.
+
+        :param other: Other object to compare to
+        :return: if the objects are equal
+        """
+        ...
+
 
 def add_from_image(grid: 'GameGrid', element_class: Type[GridObject],
                    image_path: str, random_rotation: bool = False) -> None:

@@ -49,21 +49,6 @@ class GameGrid(Drawable):
             return True
         return False
 
-    def remove(self, element: GridObject) -> bool:
-        """ Tries to remove an object from the grid
-
-        :param element: The object to remove
-        :return: if the object was successfully removed
-        """
-        if element in self.elements:
-            self.elements.remove(element)
-            try:
-                self.drawables.remove(element)
-            except ValueError:
-                ...
-            return True
-        return False
-
     def get(self, pose: Pose) -> List[GridObject]:
         """ Gets the objects at the given position
 
@@ -71,6 +56,15 @@ class GameGrid(Drawable):
         :return: List of objects at the given position
         """
         return self.grid[pose.x][pose.y]
+
+    def __eq__(self, other: 'GameGrid') -> bool:
+        """ Compares two game grids.
+        Two game grids are equal if they have elements in the same places that agree on their equality.
+        Layer order is enforced.
+
+        :param other: The other object to compare to
+        """
+        return self.grid == other.grid
 
     def draw(self):
         for element in self.drawables:

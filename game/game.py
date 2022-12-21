@@ -1,11 +1,9 @@
-from typing import List
-
 from game.Constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT
-from game.drawable import Drawable
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
 from game.pose import Pose
 from game.wall import Wall
+from game.resources import get_resource_path
 from pyglet import window
 from pyglet.window import key
 
@@ -17,7 +15,7 @@ class Game(window.Window):
         self.init_walls()
 
     def init_walls(self):
-        add_from_image(self.grid, Wall, '../DrinkTheBeer/resources/map.png')
+        add_from_image(self.grid, Wall, get_resource_path('map.png'))
 
     def draw(self):
         self.grid.draw()
