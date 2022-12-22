@@ -13,10 +13,10 @@ class GridObject(ABC):
     """
     update_every_frame = False
 
-    @abstractmethod
     def __init__(self, pose: Pose = Pose()):
         self.grid: 'GameGrid' = None
         self.pose = pose
+        # Size of the object, in terms of space taken up within the grid
         self.tile_size = 5
 
     def add_to_grid(self, grid: 'GameGrid') -> bool:
@@ -35,23 +35,46 @@ class GridObject(ABC):
         return self.grid.remove(self)
 
     def move_to_position(self, pose: Pose) -> bool:
-        """ Move the object to the given position on the grid
+        """ Move the object to the given position on the grid.
+
+        .. note:: Below is an overview of how the method works
+
+            - Bounds check on desired pose, potentially return
+            - Perform collisions with other objects at pose. There is a case to be made for having this one step later
+              but it is easy to change later.
+            - Check to see if object can coexist with other objects at the desired pose, potentially return
+            - Move to position
 
         :param pose: position to move to
         :return: bool, True if the move was successful, False otherwise
         """
+        # Check if given position is in bounds
         if pose.x < 0 or pose.x >= self.grid.width or pose.y < 0 or pose.y >= self.grid.height:
             return False
+
+        # Perform collision simulations between this object and all other objects at the given position
+        for other in self.grid.get(pose):
+            self.collision(other)
+            other.collision(self)
+
+        # Check if the object can coexist with other objects at the given position
         if not self.can_coexist(self.grid.get(pose)):
             return False
+
+        # Remove from old position.
+        # Try except could be avoided with a check to self.grid.objects,
+        # but this is more efficient since it only checks the grid once and will rarely fail
         try:
             self.grid.get(self.pose).remove(self)
         except ValueError:
             ...  # Object was not in the grid, happens on first adding to grid
+
+        # Update pose and add to new position
         self.pose.set_to(pose)
         self.grid.get(self.pose).append(self)
         return True
 
+    @abstractmethod
     def can_coexist(self, others: List['GridObject']) -> bool:
         """ Whether this object can coexist with other objects on the grid at this tile
 
@@ -67,6 +90,19 @@ class GridObject(ABC):
 
         :param others: Objects this object overlaps with, including self
         :return: None
+        """
+        ...
+
+    @abstractmethod
+    def collision(self, other: 'GridObject') -> None:
+        """ Called when this object collides with another object. Called on every pair of objects that collide,
+        once for each object. Should not return anything. Typically called before a can_coexist check.
+
+        .. note:: Be careful modifying `other` because both self.collision(other) and other.collision(self) will be called
+        and effects should not be applied twice.
+
+        .. see:: can_coexist
+        :param other: Other object
         """
         ...
 

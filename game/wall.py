@@ -19,10 +19,12 @@ class Wall(GridDrawable):
             self.pose.coordinates_equal(other.pose) and \
             self.pose.sizes_equal(other.pose)
 
-    def can_coexist(self, other: 'GridObject') -> bool:
-        # only if other is empty
-        # TODO: figure out how to do this better, say if I wanted the player to be able to destroy walls
-        return not other
+    def can_coexist(self, others: List['GridObject']) -> bool:
+        # Return false if anything in others
+        return not others
+
+    def collision(self, other: 'GridObject') -> None:
+        self.remove_from_grid()
 
     def overlaps(self, others: List['GridObject']) -> None:
         # `others` will always be empty

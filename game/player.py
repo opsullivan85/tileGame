@@ -20,10 +20,10 @@ class Player(GridDrawable):
         return isinstance(other, Player) and self.pose == other.pose
 
     def can_coexist(self, others: List['GridObject']) -> bool:
-        for other in others:
-            if isinstance(other, Wall):
-                other.remove_from_grid()
         return super().can_coexist(others)
+
+    def collision(self, other: 'GridObject') -> None:
+        pass
 
     def overlaps(self, others: List['GridObject']) -> None:
         # `others` will always be empty
