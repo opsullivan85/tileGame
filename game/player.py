@@ -3,17 +3,18 @@ from typing import List
 from pyglet import image
 
 from game.gridDrawable import GridDrawable
+from game.gridHealthy import GridHealthy
 from game.gridObject import GridObject
 from game.pose import Pose
 from game.resources import get_resource_path
 from game.wall import Wall
 
 
-class Player(GridDrawable):
+class Player(GridHealthy):
     _player_texture_path = get_resource_path('textures/pointer.png')
 
     def __init__(self, pose: Pose = Pose()):
-        super().__init__(pose, image.load(Player._player_texture_path))
+        super().__init__(100, pose=pose, img=image.load(Player._player_texture_path))
         self.tile_size = 2
 
     def __eq__(self, other):

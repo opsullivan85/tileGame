@@ -29,13 +29,12 @@ class GridDrawable(GridObject, Drawable, ABC):
 
     def __update(self):
         """ Updates the visual properties of this sprite.
+        TODO: Check if this is faster than just updating every frame.
 
-        Notes:
+        .. note::
             - Dunder naming is used to avoid name conflicts with subclasses.
             - This method is called automatically when the sprite is drawn.
             - I'm not sure if the extra work of checking for pose updates actually makes it faster.
-                TODO: Check if this is faster than just updating every frame.
-
         """
         if self.pose.w_updated:
             self._sprite.scale_x = self.texture_size * self.pose.w / self._sprite.image.width

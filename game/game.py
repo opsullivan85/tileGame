@@ -9,6 +9,7 @@ from game.pose import Pose
 from game.resources import get_resource_path
 from game.wall import Wall
 
+from time import time
 
 class Game(window.Window):
     """ Main game class.
@@ -24,11 +25,16 @@ class Game(window.Window):
         self.grid.add(Player(Pose(2, 2)))
         self.grid.add(Player(Pose(3, 3)))
         self.grid.add(Player(Pose(3, 3, 90)))
+        self.prev_time = time()
 
     def init_walls(self):
         add_from_image(self.grid, Wall, get_resource_path('map.png'))
 
     def draw(self):
+        print(time() - self.prev_time)
+        self.prev_time = time()
+        for obj in self.grid.elements:
+            obj.pose.theta += 1
         self.grid.draw()
 
     def on_draw(self):
@@ -49,4 +55,16 @@ class Game(window.Window):
         elif symbol == key.D:
             self.player.move_to_position(self.player.pose + Pose(1, 0))
             self.player.pose.theta = 90
+        elif symbol == key.UP:
+            self.player.pose.h += 0.5
+        elif symbol == key.DOWN:
+            self.player.pose.h -= 0.5
+        elif symbol == key.LEFT:
+            self.player.pose.w -= 0.5
+        elif symbol == key.RIGHT:
+            self.player.pose.w += 0.5
+        elif symbol == key.BRACKETLEFT:
+            self.player.health -= 5
+        elif symbol == key.BRACKETRIGHT:
+            self.player.health += 5
         # print(self.player.pose)
