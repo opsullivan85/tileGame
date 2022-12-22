@@ -1,6 +1,9 @@
 from abc import ABC
+from typing import Union
 
 from pyglet import image, sprite
+from pyglet.shapes import ShapeBase
+from pyglet.sprite import Sprite
 
 from game.constants import TEXTURE_SIZE
 from game.drawable import Drawable
@@ -25,7 +28,7 @@ class GridDrawable(GridObject, Drawable, ABC):
         self.texture_size = texture_size
         img.anchor_x = int(img.width * rotation_center[0])
         img.anchor_y = int(img.height * rotation_center[1])
-        self._sprite: sprite = sprite.Sprite(img, self.pose.x, self.pose.y)
+        self._sprite: sprite.Sprite = sprite.Sprite(img, self.pose.x, self.pose.y)
 
     def __update(self):
         """ Updates the visual properties of this sprite.
@@ -47,6 +50,9 @@ class GridDrawable(GridObject, Drawable, ABC):
         if self.pose.theta_updated:
             self._sprite.rotation = self.pose.theta
         self.pose.reset_updates()
+
+    def get_sprites(self) -> list[Union[Sprite, ShapeBase]]:
+        return [self._sprite]
 
     def draw(self):
         self.__update()

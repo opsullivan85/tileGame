@@ -1,5 +1,8 @@
 from abc import ABC
-from typing import Optional
+from typing import Optional, Union
+
+from pyglet.shapes import ShapeBase
+from pyglet.sprite import Sprite
 
 from game.gridDrawable import GridDrawable
 from pyglet import shapes
@@ -14,9 +17,10 @@ class AttrHealthy(GridDrawable, ABC):
             self.max_health = health
         else:
             self.max_health = max_health
-        self.draw_health_bar = draw_health_bar
         self.health_bar = shapes.Line(0, 0, 0, 0, width=5, color=(255, 0, 0))
         self.health_bar.opacity = 150
+        self._draw_health_bar = draw_health_bar
+        self.draw_health_bar = draw_health_bar
 
         self.health_bar.x = self.texture_size * self.pose.x
         self.health_bar.x2 = (self.texture_size * self.pose.x + self.texture_size) * (self.health / self.max_health)
@@ -32,6 +36,15 @@ class AttrHealthy(GridDrawable, ABC):
         if value != self._health:
             self._health = value
             self.health_updated = True
+
+    @property
+    def draw_health_bar(self):
+        return self._draw_health_bar
+
+    @draw_health_bar.setter
+    def draw_health_bar(self, value: bool):
+        self._draw_health_bar = value
+        self.health_bar.visible = value
 
     def __update(self):
         """ Updates the visual properties of this sprite.
@@ -54,6 +67,9 @@ class AttrHealthy(GridDrawable, ABC):
         if self.pose.y_updated:
             self.health_bar.y = self.texture_size * self.pose.y + self.health_bar._width / 2
             self.health_bar.y2 = self.health_bar.y
+
+    def get_sprites(self) -> list[Union[Sprite, ShapeBase]]:
+        return super().get_sprites() + [self.health_bar]
 
     def draw(self):
         if self.draw_health_bar:
