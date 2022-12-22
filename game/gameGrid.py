@@ -87,3 +87,5 @@ class GameGrid(Drawable):
         for element in self.always_update_list + self.update_list:
             element.update(dt)
         self.update_list = []
+        for element in self.elements:
+            element.overlaps(self.get(element.pose))

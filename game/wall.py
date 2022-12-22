@@ -24,11 +24,10 @@ class Wall(GridDrawable):
         return not others
 
     def collision(self, other: 'GridObject') -> None:
-        self.remove_from_grid()
+        ...
 
     def overlaps(self, others: List['GridObject']) -> None:
-        # `others` will always be empty
-        pass
+        ...
 
     def update(self, dt: float) -> None:
         ...

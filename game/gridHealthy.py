@@ -50,10 +50,6 @@ class GridHealthy(GridDrawable, ABC):
                 shift = self.texture_size * (self.health / self.max_health - 1) / 2
                 self.health_bar.x = self.texture_size * self.pose.x - shift
                 self.health_bar.x2 = self.texture_size * self.pose.x + self.texture_size + shift
-                print(f'{self.health=}')
-                print(f'{shift=}')
-                print(f'{self.health_bar.x=}')
-                print(f'{self.health_bar.x2=}')
             self.health_updated = False
         if self.pose.y_updated:
             self.health_bar.y = self.texture_size * self.pose.y + self.health_bar._width / 2

@@ -2,7 +2,6 @@ from typing import List
 
 from pyglet import image
 
-from game.gridDrawable import GridDrawable
 from game.gridHealthy import GridHealthy
 from game.gridObject import GridObject
 from game.pose import Pose
@@ -16,19 +15,20 @@ class Player(GridHealthy):
     def __init__(self, pose: Pose = Pose()):
         super().__init__(100, pose=pose, img=image.load(Player._player_texture_path))
         self.tile_size = 2
+        self.update_every_frame = True
 
     def __eq__(self, other):
-        return isinstance(other, Player) and self.pose == other.pose
+        return isinstance(other, Player) and self.health == other.health
 
     def can_coexist(self, others: List['GridObject']) -> bool:
         return super().can_coexist(others)
 
     def collision(self, other: 'GridObject') -> None:
-        pass
+        if isinstance(other, Wall):
+            other.remove_from_grid()
 
     def overlaps(self, others: List['GridObject']) -> None:
-        # `others` will always be empty
-        pass
+        ...
 
     def update(self, dt: float) -> None:
         ...

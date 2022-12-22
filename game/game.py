@@ -7,6 +7,7 @@ from game.gridObject import add_from_image
 from game.player import Player
 from game.pose import Pose
 from game.resources import get_resource_path
+from game.spike import Spike
 from game.wall import Wall
 
 from time import time
@@ -23,18 +24,25 @@ class Game(window.Window):
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
         self.grid.add(Player(Pose(2, 2)))
-        self.grid.add(Player(Pose(3, 3)))
-        self.grid.add(Player(Pose(3, 3, 90)))
+        # self.grid.add(Player(Pose(3, 3)))
+        # self.grid.add(Player(Pose(3, 3, 90)))
         self.prev_time = time()
+
+        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
+        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
+        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
+        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
+        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
+        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
 
     def init_walls(self):
         add_from_image(self.grid, Wall, get_resource_path('map.png'))
 
     def draw(self):
-        print(time() - self.prev_time)
+        # print(time() - self.prev_time)
         self.prev_time = time()
-        for obj in self.grid.elements:
-            obj.pose.theta += 1
+        # for obj in self.grid.elements:
+        #     obj.pose.theta += 1
         self.grid.draw()
 
     def on_draw(self):
