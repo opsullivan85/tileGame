@@ -2,14 +2,14 @@ from typing import List
 
 from pyglet import image
 
-from game.gridHealthy import GridHealthy
+from game.attrHealthy import AttrHealthy
 from game.gridObject import GridObject
 from game.pose import Pose
 from game.resources import get_resource_path
 from game.wall import Wall
 
 
-class Player(GridHealthy):
+class Player(AttrHealthy):
     _player_texture_path = get_resource_path('textures/pointer.png')
 
     def __init__(self, pose: Pose = Pose()):

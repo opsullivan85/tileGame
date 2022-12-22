@@ -3,13 +3,13 @@ from typing import List
 from pyglet import image
 
 from game.gridDrawable import GridDrawable
-from game.gridHarmful import GridHarmful
-from game.gridHealthy import GridHealthy
+from game.attrHarmful import AttrHarmful
+from game.attrHealthy import AttrHealthy
 from game.pose import Pose
 from game.resources import get_resource_path
 
 
-class Spike(GridHarmful, GridDrawable):
+class Spike(AttrHarmful, GridDrawable):
     _spike_texture_path = get_resource_path('textures/pointer.png')
 
     def __init__(self, pose: Pose = Pose(), damage: int = 1):
@@ -23,7 +23,7 @@ class Spike(GridHarmful, GridDrawable):
 
     def overlaps(self, others: List['GridObject']) -> None:
         for other in others:
-            if isinstance(other, GridHealthy):
+            if isinstance(other, AttrHealthy):
                 self.attack(other)
 
     def collision(self, other: 'GridObject') -> None:

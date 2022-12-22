@@ -5,7 +5,7 @@ from game.gridDrawable import GridDrawable
 from pyglet import shapes
 
 
-class GridHealthy(GridDrawable, ABC):
+class AttrHealthy(GridDrawable, ABC):
     def __init__(self, health: int, max_health: Optional[int] = None, draw_health_bar: bool = True, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._health = health
