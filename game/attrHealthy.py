@@ -27,6 +27,12 @@ class AttrHealthy(GridDrawable, ABC):
         self.health_bar.y = self.texture_size * self.pose.y + self.health_bar._width / 2
         self.health_bar.y2 = self.health_bar.y
 
+    def is_alive(self):
+        return self.health > 0
+
+    def is_dead(self):
+        return self.health <= 0
+
     @property
     def health(self):
         return self._health

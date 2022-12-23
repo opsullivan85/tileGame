@@ -14,6 +14,7 @@ class GridObject(ABC):
     update_every_frame = False
 
     def __init__(self, pose: Pose = Pose()):
+        super().__init__()
         self.grid: 'GameGrid' = None
         self.pose = pose
         # Size of the object, in terms of space taken up within the grid

@@ -3,6 +3,7 @@ from math import floor
 from pyglet import window, clock
 from pyglet.window import key
 
+from game.callbackHandler import CallbackHandler
 from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, GRID_HEIGHT, GRID_WIDTH
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
@@ -27,12 +28,13 @@ class Game(window.Window):
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
         self.grid.add(Player(Pose(2, 2)))
-        # self.grid.add(Player(Pose(3, 3)))
-        # self.grid.add(Player(Pose(3, 3, 90)))
         self.prev_frame_time = floor(time())
         self.fps = 0
 
         self.grid.add(Spike(pose=Pose(3, 3), damage=10))
+
+        self.callbackHandler = CallbackHandler()
+        self.callbackHandler.add_callback(self.player.is_dead, self.on_player_death, one_time=True)
 
         self.set_update_interval()
 
@@ -82,6 +84,10 @@ class Game(window.Window):
             self.player.health += 5
         self.set_update_interval()
 
+    def on_player_death(self):
+        self.close()
+        print('Player died')
+
     def set_update_interval(self, interval: float = 0.5):
         """ Sets the update interval. Updates immediately on call.
 
@@ -98,6 +104,7 @@ class Game(window.Window):
         :param dt: time since last update, not currently used
         """
         print(dt)
-        for obj in self.grid.elements:
-            obj.pose.theta += 10
+        # for obj in self.grid.elements:
+        #     obj.pose.theta += 10
         self.grid.update()
+        self.callbackHandler.check_callbacks()

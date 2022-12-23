@@ -15,6 +15,7 @@ class GameGrid(Drawable):
         :param height: Height of the grid
         :param width: Width of the grid
         """
+        super().__init__()
         self.height = height
         self.width = width
         self.grid: List[List[List[GridObject]]] = [[[] for _ in range(height)] for _ in range(width)]
