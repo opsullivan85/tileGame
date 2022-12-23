@@ -29,6 +29,7 @@ class Game(window.Window):
         self.grid.add(self.player)
         self.grid.add(Player(Pose(2, 2)))
         self.prev_frame_time = floor(time())
+        self.prev_update_time = time()
         self.fps = 0
 
         self.grid.add(Spike(pose=Pose(3, 3), damage=10))
@@ -86,7 +87,6 @@ class Game(window.Window):
 
     def on_player_death(self):
         self.close()
-        print('Player died')
 
     def set_update_interval(self, interval: float = 0.5):
         """ Sets the update interval. Updates immediately on call.
@@ -95,7 +95,7 @@ class Game(window.Window):
         """
         clock.unschedule(self.update)
         # self.update needs to be called here so the game updates on player movement
-        self.update(1)  # figure out how to pass in a sensible interval
+        self.update(time() - self.prev_update_time)  # figure out how to pass in a sensible interval
         clock.schedule_interval_soft(self.update, interval)
 
     def update(self, dt: float):
@@ -104,6 +104,7 @@ class Game(window.Window):
         :param dt: time since last update, not currently used
         """
         print(dt)
+        self.prev_update_time = time()
         # for obj in self.grid.elements:
         #     obj.pose.theta += 10
         self.grid.update()
