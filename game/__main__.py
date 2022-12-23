@@ -1,4 +1,5 @@
 import pyglet
+
 from game.game import Game
 
 

@@ -1,4 +1,5 @@
 from math import floor
+from time import time
 
 from pyglet import window, clock
 from pyglet.window import key
@@ -14,8 +15,6 @@ from game.resources import get_resource_path
 from game.spike import Spike
 from game.wall import Wall
 
-from time import time
-
 
 class Game(window.Window):
     """ Main game class.
@@ -25,7 +24,6 @@ class Game(window.Window):
         super().__init__(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
         self.grid = GameGrid(GRID_HEIGHT, GRID_WIDTH)
         self.init_walls()
-        dw
         self.grid.add(Spike(damage=10, pose=Pose(3, 3)))
         self.grid.add(HealingPad(healing=10, pose=Pose(3, 7)))
 

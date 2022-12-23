@@ -2,8 +2,8 @@ from typing import List
 
 from pyglet import image
 
-from game.gridDrawable import GridDrawable
 from game.attributes import AttrHealthy, AttrHarmful
+from game.gridDrawable import GridDrawable
 from game.pose import Pose
 from game.resources import get_resource_path
 
