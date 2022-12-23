@@ -7,6 +7,7 @@ from game.callbackHandler import CallbackHandler
 from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, GRID_HEIGHT, GRID_WIDTH
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
+from game.healingPad import HealingPad
 from game.player import Player
 from game.pose import Pose
 from game.resources import get_resource_path
@@ -24,6 +25,9 @@ class Game(window.Window):
         super().__init__(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
         self.grid = GameGrid(GRID_HEIGHT, GRID_WIDTH)
         self.init_walls()
+        dw
+        self.grid.add(Spike(damage=10, pose=Pose(3, 3)))
+        self.grid.add(HealingPad(healing=10, pose=Pose(3, 7)))
 
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
@@ -31,8 +35,6 @@ class Game(window.Window):
         self.prev_frame_time = floor(time())
         self.prev_update_time = time()
         self.fps = 0
-
-        self.grid.add(Spike(pose=Pose(3, 3), damage=10))
 
         self.callbackHandler = CallbackHandler()
         self.callbackHandler.add_callback(self.player.is_dead, self.on_player_death, one_time=True)

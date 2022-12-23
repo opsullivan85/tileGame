@@ -93,3 +93,12 @@ class AttrHarmful(GridObject, ABC):
 
     def attack(self, other: AttrHealthy) -> None:
         other.health -= self.damage
+
+
+class AttrHealing(GridObject, ABC):
+    def __init__(self, healing: float, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.healing = healing
+
+    def heal(self, other: AttrHealthy) -> None:
+        other.health += self.healing
