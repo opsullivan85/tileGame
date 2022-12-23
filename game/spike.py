@@ -15,7 +15,7 @@ class Spike(AttrHarmful, GridDrawable):
     def __init__(self, pose: Pose = Pose(), damage: int = 1):
         pose.h = 0.35
         pose.w = 0.75
-        super().__init__(damage=1, pose=pose, img=image.load(Spike._spike_texture_path))
+        super().__init__(damage=damage, pose=pose, img=image.load(Spike._spike_texture_path))
         self.tile_size = 0
 
     def can_coexist(self, others: List['GridObject']) -> bool:

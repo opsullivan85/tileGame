@@ -1,6 +1,6 @@
 from math import floor
 
-from pyglet import window
+from pyglet import window, clock
 from pyglet.window import key
 
 from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, GRID_HEIGHT, GRID_WIDTH
@@ -32,7 +32,9 @@ class Game(window.Window):
         self.prev_frame_time = floor(time())
         self.fps = 0
 
-        self.grid.add(Spike(pose=Pose(3, 3), damage=1))
+        self.grid.add(Spike(pose=Pose(3, 3), damage=10))
+
+        self.set_update_interval()
 
     def init_walls(self):
         add_from_image(self.grid, Wall, get_resource_path('map.png'))
@@ -47,12 +49,9 @@ class Game(window.Window):
 
     def draw(self):
         self.print_fps()
-        for obj in self.grid.elements:
-            obj.pose.theta += 1
         self.grid.draw()
 
     def on_draw(self):
-        self.grid.update()
         self.clear()
         self.draw()
 
@@ -81,4 +80,24 @@ class Game(window.Window):
             self.player.health -= 5
         elif symbol == key.BRACKETRIGHT:
             self.player.health += 5
-        # print(self.player.pose)
+        self.set_update_interval()
+
+    def set_update_interval(self, interval: float = 0.5):
+        """ Sets the update interval. Updates immediately on call.
+
+        :param interval: time between updates in seconds
+        """
+        clock.unschedule(self.update)
+        # self.update needs to be called here so the game updates on player movement
+        self.update(1)  # figure out how to pass in a sensible interval
+        clock.schedule_interval_soft(self.update, interval)
+
+    def update(self, dt: float):
+        """ Update the game state.
+
+        :param dt: time since last update, not currently used
+        """
+        print(dt)
+        for obj in self.grid.elements:
+            obj.pose.theta += 10
+        self.grid.update()

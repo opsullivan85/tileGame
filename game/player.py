@@ -24,8 +24,9 @@ class Player(AttrHealthy):
         return super().can_coexist(others)
 
     def collision(self, other: 'GridObject') -> None:
-        if isinstance(other, Wall):
-            other.remove_from_grid()
+        # if isinstance(other, Wall):
+        #     other.remove_from_grid()
+        ...
 
     def overlaps(self, others: List['GridObject']) -> None:
         ...
