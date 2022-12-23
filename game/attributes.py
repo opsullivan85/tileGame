@@ -1,11 +1,12 @@
 from abc import ABC
 from typing import Optional, Union
 
+from pyglet import shapes
 from pyglet.shapes import ShapeBase
 from pyglet.sprite import Sprite
 
 from game.gridDrawable import GridDrawable
-from pyglet import shapes
+from game.gridObject import GridObject
 
 
 class AttrHealthy(GridDrawable, ABC):
@@ -83,3 +84,12 @@ class AttrHealthy(GridDrawable, ABC):
         super().draw()
         # Draw health bar under sprite
         self.health_bar.draw()
+
+
+class AttrHarmful(GridObject, ABC):
+    def __init__(self, damage: float, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.damage = damage
+
+    def attack(self, other: AttrHealthy) -> None:
+        other.health -= self.damage

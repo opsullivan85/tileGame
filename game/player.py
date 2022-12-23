@@ -2,7 +2,7 @@ from typing import List
 
 from pyglet import image
 
-from game.attrHealthy import AttrHealthy
+from game.attributes import AttrHealthy
 from game.gridObject import GridObject
 from game.pose import Pose
 from game.resources import get_resource_path
