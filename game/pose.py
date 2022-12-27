@@ -1,3 +1,6 @@
+from typing import Union
+
+
 class Pose:
     """ Class for storing and manipulating poses.
     """
@@ -22,11 +25,16 @@ class Pose:
             self.h == other.h
 
     def __str__(self):
-        return f'(x={"*" * self.x_updated}{self.x}, ' \
-               f'y={"*" * self.y_updated}{self.y}, ' \
-               f'theta={"*" * self.theta_updated}{self.theta}, ' \
-               f'w={"*" * self.w_updated}{self.w}, ' \
-               f'h={"*" * self.h_updated}{self.h})'
+        return f'(x={"*" * self.x_updated}{self.x:.3f}, ' \
+               f'y={"*" * self.y_updated}{self.y:.3f}, ' \
+               f'theta={"*" * self.theta_updated}{self.theta:.3f}, ' \
+               f'w={"*" * self.w_updated}{self.w:.3f}, ' \
+               f'h={"*" * self.h_updated}{self.h:.3f})'
+
+    def any_updated(self) -> bool:
+        """ Check if any of the pose attributes have been updated
+        """
+        return self.x_updated or self.y_updated or self.theta_updated or self.w_updated or self.h_updated
 
     def coordinates_equal(self, other: 'Pose') -> bool:
         """ Check if the coordinates of two poses are equal
@@ -70,33 +78,68 @@ class Pose:
         """
         return Pose(0, 0, theta=self.theta)
 
-    def __add__(self, other):
+    def __add__(self, other: 'Pose'):
         """ Add two poses together like vectors, **ignoring width and height**.
         """
         return Pose(self.x + other.x, self.y + other.y, self.theta + other.theta, self.w, self.h)
 
-    def __sub__(self, other):
+    def __sub__(self, other: 'Pose'):
         """ Subtract two poses like vectors, **ignoring width and height**.
         """
         return Pose(self.x - other.x, self.y - other.y, self.theta - other.theta, self.w, self.h)
 
-    def __mul__(self, other):
+    def __mul__(self, other: Union['Pose', float]):
         """ Multiply two poses like vectors, **including width and height**.
+        Or multiply a pose and a scalar, **including width and height**.
         """
-        return Pose(self.x * other.x, self.y * other.y, self.theta * other.theta, self.w * other.w, self.h * other.h)
+        if isinstance(other, Pose):
+            return Pose(self.x * other.x,
+                        self.y * other.y,
+                        self.theta * other.theta,
+                        self.w * other.w,
+                        self.h * other.h)
+        else:
+            return Pose(self.x * other,
+                        self.y * other,
+                        self.theta * other,
+                        self.w * other,
+                        self.h * other)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: Union['Pose', float]):
         """ Divide two poses like vectors, **including width and height**.
+        Or divide a pose and a scalar, **including width and height**.
 
         warnings:: This is not a floor division. GameGrids do not like working with floats.
         """
-        return Pose(self.x / other.x, self.y / other.y, self.theta / other.theta, self.w / other.w, self.h / other.h)
+        if isinstance(other, Pose):
+            return Pose(self.x / other.x,
+                        self.y / other.y,
+                        self.theta / other.theta,
+                        self.w / other.w,
+                        self.h / other.h)
+        else:
+            return Pose(self.x / other,
+                        self.y / other,
+                        self.theta / other,
+                        self.w / other,
+                        self.h / other)
 
-    def __floordiv__(self, other):
+    def __floordiv__(self, other: Union['Pose', float]):
         """ Divide two poses like vectors, flooring, **including width and height**.
+        Or divide a pose and a scalar, flooring, **including width and height**.
         """
-        return Pose(self.x // other.x, self.y // other.y, self.theta // other.theta, self.w // other.w,
-                    self.h // other.h)
+        if isinstance(other, Pose):
+            return Pose(self.x // other.x,
+                        self.y // other.y,
+                        self.theta // other.theta,
+                        self.w // other.w,
+                        self.h // other.h)
+        else:
+            return Pose(self.x // other,
+                        self.y // other,
+                        self.theta // other,
+                        self.w // other,
+                        self.h // other)
 
     def set_to(self, other: 'Pose'):
         """ Set the pose to the values of another pose.
@@ -104,16 +147,11 @@ class Pose:
 
         :param other: The other pose to copy
         """
-        if other.x != self.x:
-            self.x = other.x
-        if other.y != self.y:
-            self.y = other.y
-        if other.theta != self.theta:
-            self.theta = other.theta
-        if other.w != self.w:
-            self.w = other.w
-        if other.h != self.h:
-            self.h = other.h
+        self.x = other.x
+        self.y = other.y
+        self.theta = other.theta
+        self.w = other.w
+        self.h = other.h
 
     def reset_updates(self):
         """ Reset the update flags for all pose attributes
