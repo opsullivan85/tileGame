@@ -36,6 +36,12 @@ class Pose:
         """
         return self.x == other.x and self.y == other.y
 
+    def get_coordinates_as_pose(self) -> 'Pose':
+        """ Get a new pose with the same coordinates as this pose.
+        Without rotation or size.
+        """
+        return Pose(self.x, self.y)
+
     def sizes_equal(self, other: 'Pose') -> bool:
         """ Check if the sizes of two poses are equal
 
@@ -44,6 +50,12 @@ class Pose:
         """
         return self.w == other.w and self.h == other.h
 
+    def get_size_as_pose(self) -> 'Pose':
+        """ Get a new pose with the same size as this pose.
+        Without rotation or coordinates.
+        """
+        return Pose(0, 0, w=self.w, h=self.h)
+
     def rotation_equal(self, other: 'Pose') -> bool:
         """ Check if the rotations of two poses are equal
 
@@ -51,6 +63,12 @@ class Pose:
         :return: True if the rotations of the two poses are equal
         """
         return self.theta == other.theta
+
+    def get_rotation_as_pose(self) -> 'Pose':
+        """ Get a new pose with the same rotation as this pose.
+        Without coordinates or size.
+        """
+        return Pose(0, 0, theta=self.theta)
 
     def __add__(self, other):
         """ Add two poses together like vectors, **ignoring width and height**.
