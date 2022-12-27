@@ -40,7 +40,7 @@ class Game(window.Window):
         self.set_update_interval()
 
     def init_walls(self):
-        add_from_image(self.grid, Wall, get_resource_path('map.png'))
+        add_from_image(self.grid, Wall, get_resource_path('map.png'), random_rotation=True)
 
     def print_fps(self):
         if floor(time()) - self.prev_frame_time:  # if a second has passed
@@ -51,8 +51,22 @@ class Game(window.Window):
             self.fps += 1
 
     def draw(self):
+        # TODO: fix this abomination of player tracking
+        center = Pose(GRID_WIDTH//2-1, GRID_HEIGHT//2-1)
+        player_pose = self.player.pose
+
+        for obj in self.grid.elements:
+            if obj is not self.player:
+                obj.pose += center - self.player.pose.get_coordinates_as_pose()
+        self.player.pose = center + player_pose.get_rotation_as_pose()
+
         self.print_fps()
         self.grid.draw()
+
+        self.player.pose = player_pose
+        for obj in self.grid.elements:
+            if obj is not self.player:
+                obj.pose -= center - self.player.pose.get_coordinates_as_pose()
 
     def on_draw(self):
         self.clear()
