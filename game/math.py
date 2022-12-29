@@ -1,4 +1,6 @@
 from typing import Callable
+from functools import wraps
+from time import time
 
 
 def constrain(val, min_val, max_val):
@@ -13,6 +15,7 @@ def get_smooth_step_func(start: float, stop: float, time_constant: float) -> Cal
     :param time_constant: time constant for smoothing
     :return: A function that returns a smooth step between start and stop
     """
+
     def smooth_step(t: float) -> float:
         """ Smooth step function
 
@@ -20,11 +23,36 @@ def get_smooth_step_func(start: float, stop: float, time_constant: float) -> Cal
             or stop is returned
         :return: Smoothed value
         """
+        print(f'{str(start) = }, {str(stop) = }, {time_constant = }, {t = }')
         if t <= 0:
             return start
         elif t >= time_constant:
             return stop
         else:
-            m = t/time_constant
-            return (stop-start)*(m*m*3-m*m*m*2)+start
+            m = t / time_constant
+            return (stop - start) * (m * m * 3 - m * m * m * 2) + start
+
     return smooth_step
+
+
+def fill_empty_dt_kwarg(func):
+    """ Tracks dt and fills in for function calls that don't have it.
+    dt is reset every time the function is called, regardless of if dt is included or not.
+    Function calls including dt must be kwargs and not args.
+
+    :param func: Function to wrap
+    """
+    prev_time = time()
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'dt' in kwargs:
+            dt = kwargs['dt']
+            del kwargs['dt']
+        else:
+            nonlocal prev_time
+            dt = time() - prev_time
+        prev_time = time()
+        return func(*args, dt=dt, **kwargs)
+
+    return wrapper

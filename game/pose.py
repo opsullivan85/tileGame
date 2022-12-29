@@ -1,4 +1,5 @@
 from typing import Union
+from math import isclose
 
 
 class Pose:
@@ -18,11 +19,11 @@ class Pose:
         self.h_updated = True
 
     def __eq__(self, other):
-        return self.x == other.x and \
-            self.y == other.y and \
-            self.theta == other.theta and \
-            self.w == other.w and \
-            self.h == other.h
+        return isclose(self.x, other.x) \
+            and isclose(self.y, other.y) \
+            and isclose(self.theta, other.theta) \
+            and isclose(self.w, other.w) \
+            and isclose(self.h, other.h)
 
     def __str__(self):
         return f'(x={"*" * self.x_updated}{self.x:.3f}, ' \
@@ -32,7 +33,8 @@ class Pose:
                f'h={"*" * self.h_updated}{self.h:.3f})'
 
     def any_updated(self) -> bool:
-        """ Check if any of the pose attributes have been updated
+        """ Check if any of the pose attributes have been updated.
+        Resets after every game engine update.
         """
         return self.x_updated or self.y_updated or self.theta_updated or self.w_updated or self.h_updated
 
@@ -141,17 +143,19 @@ class Pose:
                         self.w // other,
                         self.h // other)
 
-    def set_to(self, other: 'Pose'):
+    def set_to(self, other: 'Pose') -> 'Pose':
         """ Set the pose to the values of another pose.
         Respects update variables.
 
         :param other: The other pose to copy
+        :return: The pose itself
         """
         self.x = other.x
         self.y = other.y
         self.theta = other.theta
         self.w = other.w
         self.h = other.h
+        return self
 
     def reset_updates(self):
         """ Reset the update flags for all pose attributes

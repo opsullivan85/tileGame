@@ -5,6 +5,7 @@ from pyglet import shapes
 from pyglet.shapes import ShapeBase
 from pyglet.sprite import Sprite
 
+from game.camera import Camera
 from game.gridDrawable import GridDrawable
 from game.gridObject import GridObject
 
@@ -53,7 +54,7 @@ class AttrHealthy(GridDrawable, ABC):
         self._draw_health_bar = value
         self.health_bar.visible = value
 
-    def __update(self):
+    def __update(self, camera: Camera):
         """ Updates the visual properties of this sprite.
         TODO: Check if this is faster than just updating every frame.
 
@@ -61,27 +62,24 @@ class AttrHealthy(GridDrawable, ABC):
             - Dunder naming is used to avoid name conflicts with subclasses.
             - This method is called automatically when the sprite is drawn.
         """
-        if self.pose.x_updated or self.health_updated:
-            if self.health <= self.max_health:
-                self.health_bar.x = self.texture_size * self.pose.x
-                self.health_bar.x2 = self.texture_size * self.pose.x \
-                                     + (self.texture_size * (self.health / self.max_health))
-            else:  # Centered here looks better
-                shift = self.texture_size * (self.health / self.max_health - 1) / 2
-                self.health_bar.x = self.texture_size * self.pose.x - shift
-                self.health_bar.x2 = self.texture_size * self.pose.x + self.texture_size + shift
-            self.health_updated = False
-        if self.pose.y_updated:
-            self.health_bar.y = self.texture_size * self.pose.y + self.health_bar._width / 2
-            self.health_bar.y2 = self.health_bar.y
+        if self.health <= self.max_health:
+            self.health_bar.x = self.texture_size * self.pose.x
+            self.health_bar.x2 = self.texture_size * self.pose.x \
+                                 + (self.texture_size * (self.health / self.max_health))
+        else:  # Centered here looks better
+            shift = self.texture_size * (self.health / self.max_health - 1) / 2
+            self.health_bar.x = self.texture_size * self.pose.x - shift - camera.pose.x
+            self.health_bar.x2 = self.texture_size * self.pose.x + self.texture_size + shift
+        self.health_bar.y = self.texture_size * self.pose.y + self.health_bar._width / 2
+        self.health_bar.y2 = self.health_bar.y
 
     def get_sprites(self) -> list[Union[Sprite, ShapeBase]]:
         return super().get_sprites() + [self.health_bar]
 
-    def draw(self):
+    def draw(self, camera: Camera, dt: float):
         if self.draw_health_bar:
-            self.__update()
-        super().draw()
+            self.__update(camera)
+        super().draw(camera, dt)
         # Draw health bar under sprite
         self.health_bar.draw()
 

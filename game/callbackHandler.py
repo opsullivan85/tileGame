@@ -45,6 +45,7 @@ class CallbackHandler:
         self._listeners[event].append(CallbackHandler.Callback(callback, one_time))
         return True
 
+    # TODO: Add a handles for removing callbacks easier
     def remove_callback(self, event: Callable[..., bool], callback: Callable[..., Any]) -> bool:
         """ Removes a listener from the event.
 
@@ -78,3 +79,8 @@ class CallbackHandler:
 
         for event, callback in removals.items():
             self.remove_callback(event, callback.callable)
+
+    def clear_callbacks(self):
+        """ Clears all callbacks
+        """
+        self._listeners.clear()

@@ -5,6 +5,7 @@ from pyglet import window, clock
 from pyglet.window import key
 
 from game.callbackHandler import CallbackHandler
+from game.camera import Camera
 from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, GRID_HEIGHT, GRID_WIDTH
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
@@ -14,6 +15,7 @@ from game.pose import Pose
 from game.resources import get_resource_path
 from game.spike import Spike
 from game.wall import Wall
+from game.math import fill_empty_dt_kwarg
 
 
 class Game(window.Window):
@@ -23,13 +25,19 @@ class Game(window.Window):
     def __init__(self):
         super().__init__(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
         self.grid = GameGrid(GRID_HEIGHT, GRID_WIDTH)
+
         self.init_walls()
+
         self.grid.add(Spike(damage=10, pose=Pose(3, 3)))
         self.grid.add(HealingPad(healing=10, pose=Pose(3, 7)))
 
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
         self.grid.add(Player(Pose(2, 2)))
+
+        self.player_camera = Camera(self.player.pose)
+        self.player_camera.set_tracking(self.player.pose)
+
         self.prev_frame_time = floor(time())
         self.prev_update_time = time()
         self.fps = 0
@@ -50,27 +58,29 @@ class Game(window.Window):
         else:
             self.fps += 1
 
-    def draw(self):
+    def draw(self, camera: Camera, dt: float):
         # TODO: fix this abomination of player tracking
-        center = Pose(GRID_WIDTH//2-1, GRID_HEIGHT//2-1)
-        player_pose = self.player.pose
-
-        for obj in self.grid.elements:
-            if obj is not self.player:
-                obj.pose += center - self.player.pose.get_coordinates_as_pose()
-        self.player.pose = center + player_pose.get_rotation_as_pose()
+        # center = Pose(GRID_WIDTH//2-1, GRID_HEIGHT//2-1)
+        # player_pose = self.player.pose
+        #
+        # for obj in self.grid.elements:
+        #     if obj is not self.player:
+        #         obj.pose += center - self.player.pose.get_coordinates_as_pose()
+        # self.player.pose = center + player_pose.get_rotation_as_pose()
 
         self.print_fps()
-        self.grid.draw()
+        self.grid.draw(camera, dt)
 
-        self.player.pose = player_pose
-        for obj in self.grid.elements:
-            if obj is not self.player:
-                obj.pose -= center - self.player.pose.get_coordinates_as_pose()
+        # self.player.pose = player_pose
+        # for obj in self.grid.elements:
+        #     if obj is not self.player:
+        #         obj.pose -= center - self.player.pose.get_coordinates_as_pose()
 
-    def on_draw(self):
+    @fill_empty_dt_kwarg
+    def on_draw(self, dt: float):
         self.clear()
-        self.draw()
+        self.player_camera.update(dt)
+        self.draw(self.player_camera, dt)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.W:
@@ -117,9 +127,13 @@ class Game(window.Window):
 
         :param dt: time since last update, not currently used
         """
-        print(dt)
         self.prev_update_time = time()
-        # for obj in self.grid.elements:
-        #     obj.pose.theta += 10
-        self.grid.update()
+        # run game updates
+        self.grid.update(dt)
+        # check callbacks
         self.callbackHandler.check_callbacks()
+        # draw everything
+        self.on_draw(dt=dt)
+        # reset pose update information
+        for element in self.grid.elements:
+            element.pose.reset_updates()

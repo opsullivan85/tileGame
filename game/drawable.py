@@ -6,5 +6,5 @@ class Drawable(ABC):
     """
 
     @abstractmethod
-    def draw(self):
+    def draw(self, camera: 'Camera', dt: float):
         ...

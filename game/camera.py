@@ -6,22 +6,23 @@ from game.pose import Pose
 from game.callbackHandler import CallbackHandler
 
 
-class Camera(Drawable):
-    def draw(self):
-        pass
-
+# TODO: invert dependencies between camera and drawables. It should be camera.draw(drawable), not drawable.draw(camera)
+class Camera:
     def __init__(self, starting_pose: Pose):
-        # The camera's pose in the world
-        # Width and height should control the size of the camera's view
-        self.pose = starting_pose
+        """ Creates a new camera.
+        Width and height of the pose control the size of the camera's view.
+
+        :param starting_pose: Starting pose for the camera
+        """
+        self.pose = Pose().set_to(starting_pose)
+        print(self.pose)
         self.target_pose = self.pose
         self.position_function: Callable[[float], Pose] = lambda t: self.target_pose
         self.position_tracking_time = 0
 
         self.callback_handler = CallbackHandler()
-        self.callback_handler.add_callback(self.target_pose.any_updated, self.update_tracking)
 
-    def set_tracking(self, target: Pose, time_constant: float = 0.5):
+    def set_tracking(self, target: Pose, time_constant: float = 5):
         """ Sets the camera to track a target pose
 
         :param target: the pose to track
@@ -30,15 +31,21 @@ class Camera(Drawable):
         self.target_pose = target
         # Poses implement arithmatic rules, so they can be used in place of a float for the smooth step function
         self.position_function = get_smooth_step_func(self.pose, self.target_pose, time_constant)
+        self.callback_handler.clear_callbacks()
+        self.callback_handler.add_callback(self.target_pose.any_updated, self.update_tracking)
         self.update_tracking()
 
     def update_tracking(self):
         self.position_tracking_time = 0
 
     def update(self, dt: float) -> None:
+        """ Updates the camera's position. To be called every frame
+
+        :param dt: Time elapsed since last update
+        """
         self.callback_handler.check_callbacks()
         self.position_tracking_time += dt
-        self.pose = self.position_function(self.position_tracking_time)
+        self.pose.set_to(self.position_function(self.position_tracking_time))
 
 
 if __name__ == '__main__':

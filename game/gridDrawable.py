@@ -5,7 +5,8 @@ from pyglet import image, sprite
 from pyglet.shapes import ShapeBase
 from pyglet.sprite import Sprite
 
-from game.constants import TEXTURE_SIZE
+from game.camera import Camera
+from game.constants import TEXTURE_SIZE, GRID_WIDTH, GRID_HEIGHT
 from game.drawable import Drawable
 from game.gridObject import GridObject
 from game.pose import Pose
@@ -30,7 +31,7 @@ class GridDrawable(GridObject, Drawable, ABC):
         img.anchor_y = int(img.height * rotation_center[1])
         self._sprite: sprite.Sprite = sprite.Sprite(img, self.pose.x, self.pose.y)
 
-    def __update(self):
+    def __update(self, camera: Camera):
         """ Updates the visual properties of this sprite.
         TODO: Check if this is faster than just updating every frame.
 
@@ -39,21 +40,15 @@ class GridDrawable(GridObject, Drawable, ABC):
             - This method is called automatically when the sprite is drawn.
             - I'm not sure if the extra work of checking for pose updates actually makes it faster.
         """
-        if self.pose.w_updated:
-            self._sprite.scale_x = self.texture_size * self.pose.w / self._sprite.image.width
-        if self.pose.h_updated:
-            self._sprite.scale_y = self.texture_size * self.pose.h / self._sprite.image.height
-        if self.pose.x_updated:
-            self._sprite.x = self.texture_size * self.pose.x + self.texture_size / 2
-        if self.pose.y_updated:
-            self._sprite.y = self.texture_size * self.pose.y + self.texture_size / 2
-        if self.pose.theta_updated:
-            self._sprite.rotation = self.pose.theta
-        self.pose.reset_updates()
+        self._sprite.scale_x = self.texture_size * self.pose.w / self._sprite.image.width
+        self._sprite.scale_y = self.texture_size * self.pose.h / self._sprite.image.height
+        self._sprite.x = self.texture_size * self.pose.x - (camera.pose.x - GRID_WIDTH / 2) * self.texture_size
+        self._sprite.y = self.texture_size * self.pose.y - (camera.pose.y - GRID_HEIGHT / 2) * self.texture_size
+        self._sprite.rotation = self.pose.theta
 
     def get_sprites(self) -> list[Union[Sprite, ShapeBase]]:
         return [self._sprite]
 
-    def draw(self):
-        self.__update()
+    def draw(self, camera: Camera, dt: float):
+        self.__update(camera)
         self._sprite.draw()

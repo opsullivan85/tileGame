@@ -1,5 +1,6 @@
 from typing import List
 
+from game.camera import Camera
 from game.drawable import Drawable
 from game.gridObject import GridObject
 from game.pose import Pose
@@ -80,9 +81,9 @@ class GameGrid(Drawable):
         """
         return self.grid == other.grid
 
-    def draw(self):
+    def draw(self, camera: Camera, dt: float):
         for element in self.drawables:
-            element.draw()
+            element.draw(camera, dt)
 
     def update(self, dt: float = 1):
         for element in self.always_update_list + self.update_list:
