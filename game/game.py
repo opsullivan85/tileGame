@@ -15,7 +15,6 @@ from game.pose import Pose
 from game.resources import get_resource_path
 from game.spike import Spike
 from game.wall import Wall
-from game.math import fill_empty_dt_kwarg
 
 
 class Game(window.Window):
@@ -38,46 +37,33 @@ class Game(window.Window):
         self.player_camera = Camera(self.player.pose)
         self.player_camera.set_tracking(self.player.pose)
 
-        self.prev_frame_time = floor(time())
+        self.prev_frame_time = time()
         self.prev_update_time = time()
         self.fps = 0
 
         self.callbackHandler = CallbackHandler()
         self.callbackHandler.add_callback(self.player.is_dead, self.on_player_death, one_time=True)
 
+        self.clock = clock.get_default()
+
         self.set_update_interval()
 
     def init_walls(self):
         add_from_image(self.grid, Wall, get_resource_path('map.png'), random_rotation=True)
 
-    def print_fps(self):
-        if floor(time()) - self.prev_frame_time:  # if a second has passed
-            self.prev_frame_time = floor(time())
-            print(self.fps)
-            self.fps = 0
-        else:
-            self.fps += 1
-
     def draw(self, camera: Camera, dt: float):
-        # TODO: fix this abomination of player tracking
-        # center = Pose(GRID_WIDTH//2-1, GRID_HEIGHT//2-1)
-        # player_pose = self.player.pose
-        #
-        # for obj in self.grid.elements:
-        #     if obj is not self.player:
-        #         obj.pose += center - self.player.pose.get_coordinates_as_pose()
-        # self.player.pose = center + player_pose.get_rotation_as_pose()
-
-        self.print_fps()
         self.grid.draw(camera, dt)
 
-        # self.player.pose = player_pose
-        # for obj in self.grid.elements:
-        #     if obj is not self.player:
-        #         obj.pose -= center - self.player.pose.get_coordinates_as_pose()
+    # @override_dt_kwarg
+    def on_draw(self, dt: float = None):
+        if dt is None:
+            dt = time() - self.prev_frame_time
 
-    @fill_empty_dt_kwarg
-    def on_draw(self, dt: float):
+        try:
+            print(1 / dt)
+        except ZeroDivisionError:
+            ...
+        self.prev_frame_time = time()
         self.clear()
         self.player_camera.update(dt)
         self.draw(self.player_camera, dt)
@@ -112,28 +98,30 @@ class Game(window.Window):
     def on_player_death(self):
         self.close()
 
-    def set_update_interval(self, interval: float = 0.5):
+    def set_update_interval(self, interval: float = 2):
         """ Sets the update interval. Updates immediately on call.
 
         :param interval: time between updates in seconds
         """
-        clock.unschedule(self.update)
+        self.clock.unschedule(self.update)
         # self.update needs to be called here so the game updates on player movement
-        self.update(time() - self.prev_update_time)  # figure out how to pass in a sensible interval
-        clock.schedule_interval_soft(self.update, interval)
+        self.update()  # figure out how to pass in a sensible interval
+        self.clock.schedule_interval_soft(self.update, interval)
 
-    def update(self, dt: float):
+    def update(self, dt: float = None):
         """ Update the game state.
 
         :param dt: time since last update, not currently used
         """
+        if dt is None:
+            dt = time() - self.prev_update_time
         self.prev_update_time = time()
         # run game updates
         self.grid.update(dt)
         # check callbacks
         self.callbackHandler.check_callbacks()
         # draw everything
-        self.on_draw(dt=dt)
+        self.on_draw()
         # reset pose update information
         for element in self.grid.elements:
             element.pose.reset_updates()
