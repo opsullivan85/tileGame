@@ -162,6 +162,16 @@ def manhattan_dst(start: DiscretePoint, target: DiscretePoint) -> float:
     return abs(start.x - target.x) + abs(start.y - target.y)
 
 
+def euclidian_dst(start: DiscretePoint, target: DiscretePoint) -> float:
+    """ Euclidian distance between two points.
+
+    :param start: Starting point.
+    :param target: Target point.
+    :return:
+    """
+    return ((start.x - target.x) ** 2 + (start.y - target.y) ** 2) ** 0.5
+
+
 class PathFindingError(Exception):
     """ Raised when pathfinding fails.
     """
@@ -184,7 +194,7 @@ class _PathFindingPoint(DiscretePoint):
         """
         super().__init__(x, y)
         self.target = target
-        self.dst = manhattan_dst(self, self.target)
+        self.dst = 0.9*manhattan_dst(self, self.target) + 0.1*euclidian_dst(self, self.target)
         self.parent = parent
 
     def __str__(self) -> str:
@@ -273,13 +283,13 @@ def a_star(start: DiscretePoint, target: DiscretePoint, grid: List[List[bool]]) 
     """
     start = _PathFindingPoint(start.x, start.y, target)
     target = _PathFindingPoint(target.x, target.y, target)
-    if (not start(grid)) or (not target(grid)):
+    if not target(grid):
         raise PathFindingError(start, target, grid)
     if start == target:
         return deque([start])
 
-    unexplored = OrderedList([start])
-    explored = OrderedList()
+    unexplored: OrderedList[_PathFindingPoint] = OrderedList([start])
+    explored: OrderedList[_PathFindingPoint] = OrderedList()
 
     while unexplored:
         current = unexplored.pop(0)

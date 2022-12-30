@@ -46,7 +46,7 @@ class Game(window.Window):
             Pose(2, 7),
         ])
         self.grid.add(Player(Pose(1, 7, 45)))
-        self.grid.add(Drone(Pose(1, 7), path=path))
+        self.grid.add(Drone(Pose(1, 7), path=path, wrap=True))
 
         self.traveler = Drone(Pose(27, 2))
 
@@ -76,7 +76,6 @@ class Game(window.Window):
     def on_draw(self, dt: float = None):
         if dt is None:
             dt = time() - self.prev_frame_time
-
         # try:
         #     print(1 / dt)
         # except ZeroDivisionError:
@@ -139,12 +138,8 @@ class Game(window.Window):
         if dt is None:
             dt = time() - self.prev_update_time
         self.prev_update_time = time()
-        path = a_star(self.traveler.pose.as_discrete_point(),
-                      self.player.pose.as_discrete_point(),
-                      self.grid.get_collision_matrix(self.traveler))
-        path = deque([Pose.from_discrete_point(p) for p in path])
-        print(path)
-        self.traveler.set_path(path, True)
+
+        self.traveler.path_find(self.player)
         # run game updates
         self.grid.update(dt)
 

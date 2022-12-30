@@ -21,9 +21,7 @@ class Spike(AttrHarmful, GridDrawable):
         return True
 
     def overlaps(self, others: List['GridObject']) -> None:
-        for other in others:
-            if isinstance(other, AttrHealthy):
-                self.attack(other)
+        super().overlaps(others)
 
     def collision(self, other: 'GridObject') -> None:
         pass
