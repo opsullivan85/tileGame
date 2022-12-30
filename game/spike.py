@@ -11,7 +11,7 @@ from game.resources import get_resource_path
 class Spike(AttrHarmful, GridDrawable):
     _spike_texture_path = get_resource_path('textures/pointer.png')
 
-    def __init__(self, damage: float, pose: Pose = Pose()):
+    def __init__(self, damage: float, pose: Pose):
         pose.h = 0.35
         pose.w = 0.75
         super().__init__(damage=damage, pose=pose, img=image.load(Spike._spike_texture_path))

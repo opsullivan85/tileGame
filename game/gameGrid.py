@@ -1,4 +1,5 @@
 from typing import List
+from multipledispatch import dispatch
 
 from game.camera import Camera
 from game.drawable import Drawable
@@ -25,23 +26,22 @@ class GameGrid(Drawable):
         self.always_update_list: List[GridObject] = []
         self.update_list: List[GridObject] = []
 
-    def add(self, element: GridObject) -> bool:
+    def add(self, element: GridObject):
         """ Tries to add an object to the grid
 
         :param element: The object to add
         :return: if the object was successfully added
         """
         element.grid = self
-        # Add to list of elements if element was successfully added to grid
-        if return_val := element.move_to_position(element.pose):
-            self.elements.append(element)
-            if issubclass(type(element), Drawable):
-                # inspector doesn't realize that element is guaranteed to be a Drawable here
-                # noinspection PyTypeChecker
-                self.drawables.append(element)
-            if element.update_every_frame:
-                self.always_update_list.append(element)
-        return return_val
+        if not element.move_to_position(element.pose):
+            raise CouldNotAddToGridException(element, element.pose)
+        self.elements.append(element)
+        if issubclass(type(element), Drawable):
+            # inspector doesn't realize that element is guaranteed to be a Drawable here
+            # noinspection PyTypeChecker
+            self.drawables.append(element)
+        if element.update_every_frame:
+            self.always_update_list.append(element)
 
     def remove(self, element: GridObject) -> bool:
         """ Tries to remove an object from the grid
@@ -64,6 +64,15 @@ class GameGrid(Drawable):
             return True
         return False
 
+    def get_collision_matrix(self, element: GridObject) -> List[List[bool]]:
+        """ Returns a 2D array of booleans indicating if a position can be occupied for the element or not.
+
+        :param element: The element to check for
+        :return: A 2D array of booleans
+        """
+        return [[element.can_coexist(self.get(x, y)) for y in range(self.height)] for x in range(self.width)]
+
+    @dispatch(Pose)
     def get(self, pose: Pose) -> List[GridObject]:
         """ Gets the objects at the given position
 
@@ -71,6 +80,16 @@ class GameGrid(Drawable):
         :return: List of objects at the given position
         """
         return self.grid[pose.x][pose.y]
+
+    @dispatch(int, int)
+    def get(self, x: int, y: int) -> List[GridObject]:
+        """ Gets the objects at the given position
+
+        :param x: X position to get objects at
+        :param y: Y position to get objects at
+        :return: List of objects at the given position
+        """
+        return self.grid[x][y]
 
     def equals(self, other: 'GameGrid') -> bool:
         """ Compares two game grids.
@@ -96,6 +115,20 @@ class GameGrid(Drawable):
         s = ''
         for y in reversed(range(self.height)):
             for x in range(self.width):
-                s += f'{len(self.grid[x][y]) if self.grid[x][y] else "."} '
+                s += f'{len(self.grid[x][y]) if self.grid[x][y] else "."}'
             s += '\n'
         return s
+
+
+class CouldNotAddToGridException(Exception):
+    """ Exception raised when an object could not be added to the grid"""
+
+    def __init__(self, element: GridObject, pose: Pose):
+        """
+
+        :param element: Element that could not be added
+        :param pose: Pose that the element could not be added to
+        """
+        self.element = element
+        self.pose = pose
+        super().__init__(f'Could not add {element} to grid at {pose}')

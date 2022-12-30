@@ -11,7 +11,6 @@ from game.pose import Pose
 class GridObject(ABC):
     """ Abstract class for things which can be placed on the game grid
     """
-    update_every_frame = False
 
     def __init__(self, pose: Pose = Pose()):
         super().__init__()
@@ -19,6 +18,7 @@ class GridObject(ABC):
         self.pose = pose
         # Size of the object, in terms of space taken up within the grid
         self.tile_size = 5
+        self.update_every_frame = False
 
     def add_to_grid(self, grid: 'GameGrid') -> bool:
         """ Add the object to the given grid

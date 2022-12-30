@@ -1,3 +1,4 @@
+from collections import deque
 from math import floor
 from time import time
 
@@ -7,6 +8,7 @@ from pyglet.window import key
 from game.callbackHandler import CallbackHandler
 from game.camera import Camera
 from game.constants import WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, GRID_HEIGHT, GRID_WIDTH
+from game.drone import Drone
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
 from game.healingPad import HealingPad
@@ -33,13 +35,17 @@ class Game(window.Window):
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
         self.grid.add(Player(Pose(2, 2)))
-        print(self.grid.add(Player(Pose(1, 5, 0 ))))
-        print(self.grid.add(Player(Pose(1, 5, 15))))
-        print(self.grid.add(Player(Pose(1, 5, 30))))
-        print(self.grid.add(Player(Pose(1, 5, 45))))
+        self.grid.add(Player(Pose(1, 5, 0)))
+        self.grid.add(Player(Pose(1, 5, 45)))
 
-        print(self.grid.get(Pose(1, 5)))
-        print(self.grid.grid[1][5])
+        path = deque([
+            Pose(1, 7),
+            Pose(2, 7),
+            Pose(3, 7),
+            Pose(2, 7),
+        ])
+        self.grid.add(Player(Pose(1, 7, 45)))
+        self.grid.add(Drone(Pose(1, 7), path=path))
 
         self.player_camera = Camera(self.player.pose)
         self.player_camera.set_tracking(self.player.pose)
@@ -103,6 +109,8 @@ class Game(window.Window):
         elif symbol == key.SPACE:
             [print() for _ in range(5)]
             print(self.grid)
+        elif symbol == key.ESCAPE:
+            self.close()
         self.set_update_interval()
 
     def on_player_death(self):

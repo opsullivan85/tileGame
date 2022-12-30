@@ -16,6 +16,9 @@ class Player(AttrHealthy):
         self.tile_size = 2
         self.update_every_frame = True
 
+    def __str__(self):
+        return f'Player(pose={self.pose}, health={self.health})'
+
     def equals(self, other):
         return isinstance(other, Player) and self.health == other.health
 

@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import Optional, Union
+from collections import deque
 
 from pyglet import shapes
 from pyglet.shapes import ShapeBase
@@ -9,6 +10,7 @@ from game.camera import Camera
 from game.constants import GRID_WIDTH, GRID_HEIGHT
 from game.gridDrawable import GridDrawable
 from game.gridObject import GridObject
+from game.pose import Pose
 
 
 class AttrHealthy(GridDrawable, ABC):
@@ -106,3 +108,41 @@ class AttrHealing(GridObject, ABC):
 
     def heal(self, other: AttrHealthy) -> None:
         other.health += self.healing
+
+
+class AttrPathFollowing(GridObject, ABC):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__path: deque[Pose] = deque()
+        self.__wrap = False
+
+    def set_path(self, path: deque[Pose], wrap: bool = False):
+        """ Sets the path to follow.
+
+        :param path: Path to follow.
+        :param wrap: If True, the path will be repeated, otherwise it will be followed once.
+        """
+        self.__path = path
+        self.__wrap = wrap
+
+    def follow_path(self) -> bool:
+        """ Follows the path set by set_path().
+
+        .. Note:: If the path is blocked, the next position will not be consumed
+        in effect it will sit there until the path is clear.
+
+        :return: False if path is finished, True otherwise
+        """
+        if self.__wrap:
+            if len(self.__path) == 1:
+                next_pose = self.__path[0]
+            else:
+                next_pose = self.__path[1]
+        else:
+            next_pose = self.__path[0]
+        success = self.move_to_position(next_pose)
+        if success and not self.__wrap:
+            self.__path.pop()
+        elif success:
+            self.__path.rotate(-1)
+        return len(self.__path) > 0

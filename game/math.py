@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 from functools import wraps
 from time import time
 
@@ -77,3 +77,18 @@ def override_dt_kwarg(func):
         return func(*args, dt=dt, **kwargs)
 
     return wrapper
+
+
+def bool_matrix_to_string(matrix: List[List[bool]]) -> str:
+    """ Converts a 2D array of booleans to a string.
+
+    :param matrix: The matrix to convert
+    :return: The string representation of the matrix. '.' for False, 'X' for True, for visibility reasons.
+    """
+    s = ''
+
+    for y in reversed(range(len(matrix[0]))):
+        for x in range(len(matrix)):
+            s += 'X' if matrix[x][y] else '.'
+        s += '\n'
+    return s

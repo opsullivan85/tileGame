@@ -26,7 +26,7 @@ class Pose:
             and isclose(self.h, other.h)
 
     def __str__(self):
-        return f'(x={"*" * self.x_updated}{self.x:.3f}, ' \
+        return f'Pose(x={"*" * self.x_updated}{self.x:.3f}, ' \
                f'y={"*" * self.y_updated}{self.y:.3f}, ' \
                f'theta={"*" * self.theta_updated}{self.theta:.3f}, ' \
                f'w={"*" * self.w_updated}{self.w:.3f}, ' \
