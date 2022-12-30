@@ -82,10 +82,16 @@ class Pose:
         """
         return Pose(0, 0, theta=self.theta)
 
-    def get_discrete_point(self) -> DiscretePoint:
+    def as_discrete_point(self) -> DiscretePoint:
         """ Get the discrete point of the pose.
         """
         return DiscretePoint(int(self.x), int(self.y))
+
+    @classmethod
+    def from_discrete_point(cls, point: DiscretePoint) -> 'Pose':
+        """ Create a pose from a discrete point.
+        """
+        return Pose(point.x, point.y)
 
     def __add__(self, other: 'Pose'):
         """ Add two poses together like vectors, **ignoring width and height**.

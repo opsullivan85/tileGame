@@ -141,6 +141,11 @@ class DiscretePoint:
         return DiscretePoint(self.x, self.y - 1)
 
     def get_data_at_pt(self, matrix: List[List[any]]) -> any:
+        """ Gets the data at this point in the matrix
+
+        :param matrix: Matrix to query
+        :return: Value at this point in the matrix
+        """
         return matrix[self.x][self.y]
 
     def __call__(self, matrix: List[List[any]]) -> any:
@@ -228,9 +233,11 @@ class _PathFindingPoint(DiscretePoint):
         return _PathFindingPoint(self.x, self.y - 1, self.target, self)
 
     def get_path(self) -> deque[DiscretePoint]:
-        path = [self]
+        path = deque([self])
         while path[-1].parent is not None:
             path.append(path[-1].parent)
+        for point in path:
+            point = DiscretePoint(point.x, point.y)
         return deque(reversed(path))
 
 
