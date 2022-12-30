@@ -1,6 +1,8 @@
 from typing import Union
 from math import isclose
 
+from game.math import DiscretePoint
+
 
 class Pose:
     """ Class for storing and manipulating poses.
@@ -79,6 +81,11 @@ class Pose:
         Without coordinates or size.
         """
         return Pose(0, 0, theta=self.theta)
+
+    def get_discrete_point(self) -> DiscretePoint:
+        """ Get the discrete point of the pose.
+        """
+        return DiscretePoint(int(self.x), int(self.y))
 
     def __add__(self, other: 'Pose'):
         """ Add two poses together like vectors, **ignoring width and height**.

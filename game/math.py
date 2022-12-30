@@ -1,3 +1,5 @@
+from collections import deque
+import bisect
 from typing import Callable, List
 from functools import wraps
 from time import time
@@ -25,7 +27,6 @@ def get_smooth_step_func(start: float, stop: float, time_constant: float) -> Cal
             or stop is returned
         :return: Smoothed value
         """
-        # print(f'{str(start) = }, {str(stop) = }, {time_constant = }, {t = }')
         if t <= 0:
             return start
         elif t >= time_constant:
@@ -83,12 +84,208 @@ def bool_matrix_to_string(matrix: List[List[bool]]) -> str:
     """ Converts a 2D array of booleans to a string.
 
     :param matrix: The matrix to convert
-    :return: The string representation of the matrix. '.' for False, 'X' for True, for visibility reasons.
+    :return: The string representation of the matrix. 'X' for False, ',' for True, for visibility reasons.
     """
     s = ''
 
     for y in reversed(range(len(matrix[0]))):
         for x in range(len(matrix)):
-            s += 'X' if matrix[x][y] else '.'
+            s += ',' if matrix[x][y] else 'x'
         s += '\n'
     return s
+
+
+class DiscretePoint:
+    """ Represents a discrete point in 2D space, with integer coordinates.
+    """
+
+    def __init__(self, x: int, y: int):
+        """
+
+        :param x: X coordinate
+        :param y: Y coordinate
+        """
+        self.x = x
+        self.y = y
+
+    def __str__(self) -> str:
+        return f'Point({self.x}, {self.y})'
+
+    def __eq__(self, other: 'DiscretePoint') -> bool:
+        if not isinstance(other, DiscretePoint):
+            return False
+        return self.x == other.x and self.y == other.y
+
+    def left(self) -> 'DiscretePoint':
+        """
+        :return: The point to the left of this point
+        """
+        return DiscretePoint(self.x - 1, self.y)
+
+    def right(self) -> 'DiscretePoint':
+        """
+        :return: The point to the right of this point
+        """
+        return DiscretePoint(self.x + 1, self.y)
+
+    def up(self) -> 'DiscretePoint':
+        """
+        :return: The point to the top of this point
+        """
+        return DiscretePoint(self.x, self.y + 1)
+
+    def down(self) -> 'DiscretePoint':
+        """
+        :return: The point to the bottom of this point
+        """
+        return DiscretePoint(self.x, self.y - 1)
+
+    def get_data_at_pt(self, matrix: List[List[any]]) -> any:
+        return matrix[self.x][self.y]
+
+    def __call__(self, matrix: List[List[any]]) -> any:
+        return self.get_data_at_pt(matrix)
+
+
+def manhattan_dst(start: DiscretePoint, target: DiscretePoint) -> float:
+    """ Manhattan distance between two points.
+
+    :param start: Starting point.
+    :param target: Target point.
+    :return:
+    """
+    return abs(start.x - target.x) + abs(start.y - target.y)
+
+
+class PathFindingError(Exception):
+    """ Raised when pathfinding fails.
+    """
+
+    def __init__(self, start: DiscretePoint, target: DiscretePoint, map: List[List[bool]]):
+        super().__init__(f'No path found from {start} to {target} on map:\n{bool_matrix_to_string(map)}')
+
+
+class _PathFindingPoint(DiscretePoint):
+    """ Helper class for pathfinding over discrete grids
+    """
+
+    def __init__(self, x: int, y: int, target: DiscretePoint, parent: DiscretePoint = None):
+        """
+
+        :param x: X coordinate
+        :param y: Y coordinate
+        :param dst: Distance from target
+        :param parent: Parent point in graph
+        """
+        super().__init__(x, y)
+        self.target = target
+        self.dst = manhattan_dst(self, self.target)
+        self.parent = parent
+
+    def __str__(self) -> str:
+        return f'_PathFindingPoint({self.x}, {self.y})'
+
+    def __eq__(self, other: '_PathFindingPoint') -> bool:
+        return self.x == other.x and self.y == other.y and self.dst == other.dst
+
+    def __ne__(self, other: '_PathFindingPoint') -> bool:
+        return not self.__eq__(other)
+
+    def __lt__(self, other: '_PathFindingPoint') -> bool:
+        return self.dst < other.dst
+
+    def __le__(self, other: '_PathFindingPoint') -> bool:
+        return self.dst <= other.dst
+
+    def __gt__(self, other: '_PathFindingPoint') -> bool:
+        return self.dst > other.dst
+
+    def __ge__(self, other: '_PathFindingPoint') -> bool:
+        return self.dst >= other.dst
+
+    def left(self) -> '_PathFindingPoint':
+        """
+        :return: The point to the left of this point
+        """
+        return _PathFindingPoint(self.x - 1, self.y, self.target, self)
+
+    def right(self) -> '_PathFindingPoint':
+        """
+        :return: The point to the right of this point
+        """
+        return _PathFindingPoint(self.x + 1, self.y, self.target, self)
+
+    def up(self) -> '_PathFindingPoint':
+        """
+        :return: The point to the top of this point
+        """
+        return _PathFindingPoint(self.x, self.y + 1, self.target, self)
+
+    def down(self) -> '_PathFindingPoint':
+        """
+        :return: The point to the bottom of this point
+        """
+        return _PathFindingPoint(self.x, self.y - 1, self.target, self)
+
+    def get_path(self) -> deque[DiscretePoint]:
+        path = [self]
+        while path[-1].parent is not None:
+            path.append(path[-1].parent)
+        return deque(reversed(path))
+
+
+class OrderedList(List):
+    """ An ordered list implementation.
+    Only append and pop are implemented.
+    __contains__ uses binary search.
+
+    # I'm sure there is a builtin for this, but I couldn't find it.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sort()
+
+    def append(self, item: any):
+        bisect.insort(self, item)
+
+    def add(self, item: any):
+        self.append(item)
+
+    def __str__(self):
+        return f'OrderedList[{", ".join(str(i) for i in self)}]'
+
+
+def a_star(start: DiscretePoint, target: DiscretePoint, grid: List[List[bool]]) -> deque[DiscretePoint]:
+    """ A* pathfinding algorithm.
+
+    :param start: Position to start from.
+    :param target: Position to reach.
+    :param grid: Map to search on. Truthy values are valid paths.
+    :return: List of coordinates to follow.
+    """
+    start = _PathFindingPoint(start.x, start.y, target)
+    target = _PathFindingPoint(target.x, target.y, target)
+    if (not start(grid)) or (not target(grid)):
+        raise PathFindingError(start, target, grid)
+    if start == target:
+        return deque([start])
+
+    unexplored = OrderedList([start])
+    explored = OrderedList()
+
+    while unexplored:
+        current = unexplored.pop(0)
+        if not current(grid):  # Obstacle
+            continue
+        elif current in explored:  # Already explored
+            continue
+        elif current == target:
+            return current.get_path()
+        explored.add(current)
+        unexplored.add(current.left())
+        unexplored.add(current.right())
+        unexplored.add(current.up())
+        unexplored.add(current.down())
+
+    raise PathFindingError(start, target, grid)

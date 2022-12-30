@@ -12,6 +12,7 @@ from game.drone import Drone
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
 from game.healingPad import HealingPad
+from game.math import a_star, DiscretePoint
 from game.player import Player
 from game.pose import Pose
 from game.resources import get_resource_path
@@ -31,6 +32,7 @@ class Game(window.Window):
 
         self.grid.add(Spike(damage=10, pose=Pose(3, 3)))
         self.grid.add(HealingPad(healing=10, pose=Pose(3, 7)))
+        self.grid.add(HealingPad(healing=10, pose=Pose(3, 8)))
 
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
@@ -60,6 +62,9 @@ class Game(window.Window):
         self.clock = clock.get_default()
 
         self.set_update_interval()
+
+        path = a_star(DiscretePoint(1, 1), DiscretePoint(27, 2), self.grid.get_collision_matrix(self.player))
+        [print(pt) for pt in path]
 
     def init_walls(self):
         add_from_image(self.grid, Wall, get_resource_path('map.png'), random_rotation=True)
