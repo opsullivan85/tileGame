@@ -33,6 +33,13 @@ class Game(window.Window):
         self.player = Player(Pose(1, 1))
         self.grid.add(self.player)
         self.grid.add(Player(Pose(2, 2)))
+        print(self.grid.add(Player(Pose(1, 5, 0 ))))
+        print(self.grid.add(Player(Pose(1, 5, 15))))
+        print(self.grid.add(Player(Pose(1, 5, 30))))
+        print(self.grid.add(Player(Pose(1, 5, 45))))
+
+        print(self.grid.get(Pose(1, 5)))
+        print(self.grid.grid[1][5])
 
         self.player_camera = Camera(self.player.pose)
         self.player_camera.set_tracking(self.player.pose)
@@ -59,10 +66,10 @@ class Game(window.Window):
         if dt is None:
             dt = time() - self.prev_frame_time
 
-        try:
-            print(1 / dt)
-        except ZeroDivisionError:
-            ...
+        # try:
+        #     print(1 / dt)
+        # except ZeroDivisionError:
+        #     ...
         self.prev_frame_time = time()
         self.clear()
         self.player_camera.update(dt)
