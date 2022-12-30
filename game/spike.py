@@ -31,5 +31,5 @@ class Spike(AttrHarmful, GridDrawable):
     def update(self, dt: float) -> None:
         pass
 
-    def __eq__(self, other: 'GridObject') -> bool:
+    def equals(self, other: 'GridObject') -> bool:
         return isinstance(other, Spike) and self.damage == other.damage

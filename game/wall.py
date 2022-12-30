@@ -14,7 +14,7 @@ class Wall(GridDrawable):
     def __init__(self, pose: Pose = Pose()):
         super().__init__(pose, image.load(Wall._wall_texture_path))
 
-    def __eq__(self, other):
+    def equals(self, other):
         return isinstance(other, Wall) and \
             self.pose.coordinates_equal(other.pose) and \
             self.pose.sizes_equal(other.pose)

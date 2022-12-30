@@ -100,6 +100,9 @@ class Game(window.Window):
             self.player.health -= 5
         elif symbol == key.BRACKETRIGHT:
             self.player.health += 5
+        elif symbol == key.SPACE:
+            [print() for _ in range(5)]
+            print(self.grid)
         self.set_update_interval()
 
     def on_player_death(self):

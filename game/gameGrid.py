@@ -72,7 +72,7 @@ class GameGrid(Drawable):
         """
         return self.grid[pose.x][pose.y]
 
-    def __eq__(self, other: 'GameGrid') -> bool:
+    def equals(self, other: 'GameGrid') -> bool:
         """ Compares two game grids.
         Two game grids are equal if they have elements in the same places that agree on their equality.
         Layer order is enforced.
@@ -91,3 +91,11 @@ class GameGrid(Drawable):
         self.update_list = []
         for element in self.elements:
             element.overlaps(self.get(element.pose))
+
+    def __str__(self):
+        s = ''
+        for y in reversed(range(self.height)):
+            for x in range(self.width):
+                s += f'{len(self.grid[x][y]) if self.grid[x][y] else "."} '
+            s += '\n'
+        return s

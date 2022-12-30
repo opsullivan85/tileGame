@@ -16,7 +16,7 @@ class Player(AttrHealthy):
         self.tile_size = 2
         self.update_every_frame = True
 
-    def __eq__(self, other):
+    def equals(self, other):
         return isinstance(other, Player) and self.health == other.health
 
     def can_coexist(self, others: List['GridObject']) -> bool:

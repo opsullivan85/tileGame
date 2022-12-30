@@ -117,8 +117,8 @@ class GridObject(ABC):
         ...
 
     @abstractmethod
-    def __eq__(self, other: 'GridObject') -> bool:
-        """ Checks equality, overrides the == operator.
+    def equals(self, other: 'GridObject') -> bool:
+        """ Checks equality, does not override the == operator.
         Important for testing.
 
         :param other: Other object to compare to
