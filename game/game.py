@@ -98,7 +98,7 @@ class Game(window.Window):
     def on_player_death(self):
         self.close()
 
-    def set_update_interval(self, interval: float = 2):
+    def set_update_interval(self, interval: float = 0.5):
         """ Sets the update interval. Updates immediately on call.
 
         :param interval: time between updates in seconds

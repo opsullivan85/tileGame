@@ -6,6 +6,7 @@ from pyglet.shapes import ShapeBase
 from pyglet.sprite import Sprite
 
 from game.camera import Camera
+from game.constants import GRID_WIDTH, GRID_HEIGHT
 from game.gridDrawable import GridDrawable
 from game.gridObject import GridObject
 
@@ -63,14 +64,19 @@ class AttrHealthy(GridDrawable, ABC):
             - This method is called automatically when the sprite is drawn.
         """
         if self.health <= self.max_health:
-            self.health_bar.x = self.texture_size * self.pose.x
-            self.health_bar.x2 = self.texture_size * self.pose.x \
-                                 + (self.texture_size * (self.health / self.max_health))
+            self.health_bar.x = self.texture_size * (self.pose.x - 0.5) \
+                                - (camera.pose.x - GRID_WIDTH / 2) * self.texture_size
+            self.health_bar.x2 = self.texture_size * (self.pose.x - 0.5) \
+                                 + (self.texture_size * (self.health / self.max_health)) \
+                                 - (camera.pose.x - GRID_WIDTH / 2) * self.texture_size
         else:  # Centered here looks better
             shift = self.texture_size * (self.health / self.max_health - 1) / 2
-            self.health_bar.x = self.texture_size * self.pose.x - shift - camera.pose.x
-            self.health_bar.x2 = self.texture_size * self.pose.x + self.texture_size + shift
-        self.health_bar.y = self.texture_size * self.pose.y + self.health_bar._width / 2
+            self.health_bar.x = self.texture_size * (self.pose.x - 0.5) - shift \
+                                - (camera.pose.x - GRID_WIDTH / 2) * self.texture_size
+            self.health_bar.x2 = self.texture_size * (self.pose.x - 0.5) + self.texture_size + shift \
+                                 - (camera.pose.x - GRID_WIDTH / 2) * self.texture_size
+        self.health_bar.y = self.texture_size * (self.pose.y - 0.5) + self.health_bar._width / 2 \
+                            - (camera.pose.y - GRID_HEIGHT / 2) * self.texture_size
         self.health_bar.y2 = self.health_bar.y
 
     def get_sprites(self) -> list[Union[Sprite, ShapeBase]]:
