@@ -1,4 +1,5 @@
 from typing import List
+
 from multipledispatch import dispatch
 
 from game.camera import Camera

@@ -1,5 +1,5 @@
-from typing import Union
 from math import isclose
+from typing import Union
 
 from game.math import DiscretePoint
 

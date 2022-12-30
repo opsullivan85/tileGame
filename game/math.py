@@ -1,8 +1,8 @@
-from collections import deque
 import bisect
-from typing import Callable, List
+from collections import deque
 from functools import wraps
 from time import time
+from typing import Callable, List
 
 
 def constrain(val, min_val, max_val):

@@ -1,6 +1,6 @@
 from abc import ABC
-from typing import Optional, Union
 from collections import deque
+from typing import Optional, Union
 
 from pyglet import shapes
 from pyglet.shapes import ShapeBase

@@ -1,5 +1,4 @@
 from collections import deque
-from math import floor
 from time import time
 
 from pyglet import window, clock
