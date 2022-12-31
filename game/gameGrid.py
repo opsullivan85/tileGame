@@ -1,10 +1,13 @@
 from typing import List
 
 from multipledispatch import dispatch
+from multiprocessing import Process
+from threading import Thread
 
 from game.camera import Camera
 from game.drawable import Drawable
 from game.gridObject import GridObject
+from game.math import timeit
 from game.pose import Pose
 
 
@@ -111,6 +114,25 @@ class GameGrid(Drawable):
         self.update_list = []
         for element in self.elements:
             element.overlaps(self.get(element.pose))
+
+        # # This is not the correct way to do this, also the pyglet objects cannot be pickled
+        # # Would be nice to get working in the future
+        # procs = []
+        # for element in self.always_update_list + self.update_list:
+        #     proc = Thread(target=element.update, args=(dt,))
+        #     procs.append(proc)
+        #     proc.start()
+        # self.update_list = []
+        # for proc in procs:
+        #     proc.join()
+        #
+        # procs = []
+        # for element in self.elements:
+        #     proc = Thread(target=element.overlaps, args=(self.get(element.pose),))
+        #     procs.append(proc)
+        #     proc.start()
+        # for proc in procs:
+        #     proc.join()
 
     def __str__(self):
         s = ''

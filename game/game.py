@@ -1,5 +1,5 @@
 from collections import deque
-from time import time
+from time import time, perf_counter
 
 from pyglet import window, clock
 from pyglet.window import key
@@ -11,7 +11,7 @@ from game.drone import Drone
 from game.gameGrid import GameGrid
 from game.gridObject import add_from_image
 from game.healingPad import HealingPad
-from game.math import a_star, DiscretePoint
+from game.math import a_star, DiscretePoint, timeit
 from game.player import Player
 from game.pose import Pose
 from game.resources import get_resource_path
@@ -49,14 +49,14 @@ class Game(window.Window):
         self.grid.add(Drone(Pose(1, 7), path=path, wrap=True))
 
         self.traveler = Drone(Pose(27, 2))
-
         self.grid.add(self.traveler)
+        self.traveler.actively_path_find(self.player)
 
         self.player_camera = Camera(self.player.pose)
         self.player_camera.set_tracking(self.player.pose)
 
-        self.prev_frame_time = time()
-        self.prev_update_time = time()
+        self.prev_frame_time = perf_counter()
+        self.prev_update_time = perf_counter()
         self.fps = 0
 
         self.callbackHandler = CallbackHandler()
@@ -73,14 +73,16 @@ class Game(window.Window):
         self.grid.draw(camera, dt)
 
     # @override_dt_kwarg
+    @timeit
     def on_draw(self, dt: float = None):
+        t = perf_counter()
         if dt is None:
-            dt = time() - self.prev_frame_time
+            dt = t - self.prev_frame_time
         # try:
         #     print(1 / dt)
         # except ZeroDivisionError:
         #     ...
-        self.prev_frame_time = time()
+        self.prev_frame_time = t
         self.clear()
         self.player_camera.update(dt)
         self.draw(self.player_camera, dt)
@@ -130,16 +132,16 @@ class Game(window.Window):
         self.update()  # figure out how to pass in a sensible interval
         self.clock.schedule_interval_soft(self.update, interval)
 
+    @timeit
     def update(self, dt: float = None):
         """ Update the game state.
 
         :param dt: time since last update, not currently used
         """
         if dt is None:
-            dt = time() - self.prev_update_time
-        self.prev_update_time = time()
+            dt = perf_counter() - self.prev_update_time
+        self.prev_update_time = perf_counter()
 
-        self.traveler.path_find(self.player)
         # run game updates
         self.grid.update(dt)
 

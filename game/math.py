@@ -1,7 +1,7 @@
 import bisect
 from collections import deque
 from functools import wraps
-from time import time
+from time import time, perf_counter
 from typing import Callable, List
 
 
@@ -306,3 +306,20 @@ def a_star(start: DiscretePoint, target: DiscretePoint, grid: List[List[bool]]) 
         unexplored.add(current.down())
 
     raise PathFindingError(start, target, grid)
+
+
+def timeit(func):
+    """ Decorator to time a function. Prints out time
+
+    :param func: Function to time.
+    """
+    # https://dev.to/kcdchennai/python-decorator-to-measure-execution-time-54hk
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        start_time = perf_counter()
+        result = func(*args, **kwargs)
+        end_time = perf_counter()
+        total_time = end_time - start_time
+        print(f'Function {func.__name__}{args} {kwargs} Took {total_time:.4f} seconds')
+        return result
+    return timeit_wrapper

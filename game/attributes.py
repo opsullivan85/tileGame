@@ -123,6 +123,8 @@ class AttrPathFinding(GridObject, ABC):
         self.__path: deque[Pose] = deque()
         self.__wrap = False
         self.is_path_following = False
+        self.actively_path_finding = False
+        self.active_path_finding_target = None
 
     def set_path(self, path: deque[Pose], wrap: bool = False):
         """ Sets the path to follow.
@@ -162,8 +164,25 @@ class AttrPathFinding(GridObject, ABC):
             self.is_path_following = False
         return not done
 
-    def path_find(self, target: GridObject) -> bool:
+    def path_find(self, target: Pose) -> bool:
         """ Finds a path to the target and sets it.
+
+        :param target: Target to find a path to.
+        :return: True if a path was found, False otherwise.
+        """
+        try:
+            path = a_star(self.pose.as_discrete_point(),
+                          target.as_discrete_point(),
+                          self.grid.get_collision_matrix(self))
+        except PathFindingError:
+            return False
+        path = deque([Pose.from_discrete_point(p) for p in path])
+        self.set_path(path)
+        return True
+
+    def actively_path_find(self, target: GridObject) -> bool:
+        """ Finds a path to the target and sets it.
+        Keeps updating pathfinding forever.
 
         :param target: Target to find a path to.
         :return: True if a path was found, False otherwise.
@@ -174,6 +193,13 @@ class AttrPathFinding(GridObject, ABC):
                           self.grid.get_collision_matrix(self))
         except PathFindingError:
             return False
+        self.actively_path_finding = True
+        self.active_path_finding_target = target
         path = deque([Pose.from_discrete_point(p) for p in path])
         self.set_path(path)
         return True
+
+    def update(self, dt: float) -> None:
+        super().update(dt)
+        if self.actively_path_finding:
+            self.actively_path_find(self.active_path_finding_target)
