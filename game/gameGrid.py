@@ -5,13 +5,13 @@ from multiprocessing import Process
 from threading import Thread
 
 from game.camera import Camera
-from game.drawable import Drawable
+from game.gridDrawable import GridDrawable
 from game.gridObject import GridObject
 from game.math import timeit
 from game.pose import Pose
 
 
-class GameGrid(Drawable):
+class GameGrid():
     """ Class manages the grid of the game.
     """
 
@@ -40,7 +40,7 @@ class GameGrid(Drawable):
         if not element.move_to_position(element.pose):
             raise CouldNotAddToGridException(element, element.pose)
         self.elements.append(element)
-        if issubclass(type(element), Drawable):
+        if issubclass(type(element), GridDrawable):
             # inspector doesn't realize that element is guaranteed to be a Drawable here
             # noinspection PyTypeChecker
             self.drawables.append(element)

@@ -19,12 +19,12 @@ from game.spike import Spike
 from game.wall import Wall
 
 
-class Game(window.Window):
+class Game:
     """ Main game class.
     """
 
-    def __init__(self):
-        super().__init__(width=WINDOW_PIXEL_WIDTH, height=WINDOW_PIXEL_HEIGHT)
+    def __init__(self, window: window.Window):
+        self.window = window
         self.grid = GameGrid(GRID_HEIGHT, GRID_WIDTH)
 
         self.init_walls()
@@ -60,7 +60,7 @@ class Game(window.Window):
         self.fps = 0
 
         self.callbackHandler = CallbackHandler()
-        self.callbackHandler.add_callback(self.player.is_dead, self.on_player_death, one_time=True)
+        # self.callbackHandler.add_callback(self.player.is_dead, self.on_player_death, one_time=True)
 
         self.clock = clock.get_default()
 
@@ -83,7 +83,7 @@ class Game(window.Window):
         # except ZeroDivisionError:
         #     ...
         self.prev_frame_time = t
-        self.clear()
+        self.window.clear()
         self.player_camera.update(dt)
         self.draw(self.player_camera, dt)
 

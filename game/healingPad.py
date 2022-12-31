@@ -1,18 +1,22 @@
 from typing import List
 
-from pyglet import image
+from pyglet import image, sprite
 
 from game.attributes import AttrHealing, AttrHealthy
+from game.camera import Camera
 from game.gridDrawable import GridDrawable
 from game.pose import Pose
 from game.resources import get_resource_path
 
+_healingPad_texture_path = get_resource_path('textures/healingPad.png')
+_healingPad_image = image.load(_healingPad_texture_path).get_region(0, 0, 64, 48)
+_healingPad_sprite = sprite.Sprite(_healingPad_image)
+
 
 class HealingPad(AttrHealing, GridDrawable):
-    _healingPad_texture_path = get_resource_path('textures/healingPad.png')
 
     def __init__(self, healing: float, pose: Pose = Pose()):
-        super().__init__(healing=healing, pose=pose, img=image.load(HealingPad._healingPad_texture_path))
+        super().__init__(healing=healing, pose=pose)
         self.tile_size = 0
 
     def heal(self, other: AttrHealthy) -> None:
@@ -34,3 +38,6 @@ class HealingPad(AttrHealing, GridDrawable):
 
     def equals(self, other: 'GridObject') -> bool:
         return isinstance(other, HealingPad) and self.healing == other.healing
+
+    def draw(self, camera: Camera, dt: float):
+        super().draw(camera, self.pose, _healingPad_sprite, dt)
