@@ -1,6 +1,3 @@
-from pyglet.sprite import Sprite
-
-from game.constants import GRID_WIDTH, GRID_HEIGHT, WINDOW_PIXEL_WIDTH, WINDOW_PIXEL_HEIGHT, TEXTURE_SIZE
 from game.pose import Pose
 
 
@@ -32,25 +29,6 @@ class Camera:
         :param dt: Time elapsed since last update
         """
         self.pose.set_to(self.pose - (self.pose - self.target_pose) * self.k_value * dt)
-
-    def draw(self, pose: Pose, sprite: Sprite) -> bool:
-        """ Draws an object to the screen
-
-        :param pose: The pose to draw the sprite in
-        :param sprite: the sprite to draw
-        :return: True if the object is in the camera's view (it was actually drawn)
-        """
-        sprite.x = TEXTURE_SIZE * pose.x - (self.pose.x - GRID_WIDTH / 2) * TEXTURE_SIZE
-        sprite.y = TEXTURE_SIZE * pose.y - (self.pose.y - GRID_HEIGHT / 2) * TEXTURE_SIZE
-        if sprite.x < 0 or sprite.y < 0 or sprite.x > WINDOW_PIXEL_WIDTH or sprite.y > WINDOW_PIXEL_HEIGHT:
-            return False
-        sprite.rotation = pose.theta
-        sprite.scale_x = TEXTURE_SIZE * pose.w / sprite.image.width
-        sprite.scale_y = TEXTURE_SIZE * pose.h / sprite.image.height
-        print(sprite)
-        sprite.draw()
-        return True
-
 
 
 if __name__ == '__main__':

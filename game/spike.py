@@ -1,22 +1,20 @@
 from typing import List
 
-from pyglet import image, sprite
+from pyglet import image
 
-from game.attributes import AttrHarmful
-from game.camera import Camera
+from game.attributes import AttrHealthy, AttrHarmful
 from game.gridDrawable import GridDrawable
 from game.pose import Pose
 from game.resources import get_resource_path
 
-_spike_texture_path = get_resource_path('textures/pointer.png')
-_spike_image = image.load(_spike_texture_path).get_region(0, 0, 64, 48)
-_spike_sprite = sprite.Sprite(_spike_image)
 
 class Spike(AttrHarmful, GridDrawable):
+    _spike_texture_path = get_resource_path('textures/pointer.png')
+
     def __init__(self, damage: float, pose: Pose):
         pose.h = 0.35
         pose.w = 0.75
-        super().__init__(damage=damage, pose=pose)
+        super().__init__(damage=damage, pose=pose, img=image.load(Spike._spike_texture_path))
         self.tile_size = 0
 
     def can_coexist(self, others: List['GridObject']) -> bool:
@@ -33,6 +31,3 @@ class Spike(AttrHarmful, GridDrawable):
 
     def equals(self, other: 'GridObject') -> bool:
         return isinstance(other, Spike) and self.damage == other.damage
-
-    def draw(self, camera: Camera, dt: float):
-        super().draw(camera, self.pose, _spike_sprite, dt)

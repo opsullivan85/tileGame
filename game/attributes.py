@@ -82,7 +82,10 @@ class AttrHealthy(GridDrawable, ABC):
                             - (camera.pose.y - GRID_HEIGHT / 2) * self.texture_size
         self.health_bar.y2 = self.health_bar.y
 
-    def draw(self, camera: Camera, dt: float, sprite: Sprite):
+    def get_sprites(self) -> list[Union[Sprite, ShapeBase]]:
+        return super().get_sprites() + [self.health_bar]
+
+    def draw(self, camera: Camera, dt: float):
         if self.draw_health_bar:
             self.__update(camera)
         super().draw(camera, dt)
